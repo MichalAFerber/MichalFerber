@@ -7,7 +7,7 @@ style: border
 color: info
 ---
 
-![Hello World!](/assets/img/Hello World!.jpg)
+![Hello World!](/assets/img/hello-world.jpg)
 
 As a tech enthusiast, I couldn’t resist diving into the collaboration between Proton and Standard Notes. Having tried almost every other note-taking app, including Joplin, I appreciate the simplicity and elegance of a clean text editor, especially when it supports Markdown.
 

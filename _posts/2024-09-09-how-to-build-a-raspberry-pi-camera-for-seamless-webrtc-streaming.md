@@ -7,7 +7,7 @@ style: border
 color: primary
 ---
 
-![Raspberry Pi models](/assets/img/raspberry-pi's.jpg)
+![Raspberry Pi models](/assets/img/raspberry-pis.jpg)
 
 ## **How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming**
 
