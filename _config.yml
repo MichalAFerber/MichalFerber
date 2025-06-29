@@ -1,7 +1,7 @@
 ### Site Settings ###
 title               : Michal Ferber
 description         : >-
-                      I turn coffee :coffee: (and Mountain Dew <img src="https://cdn3.emoji.gg/emojis/Mountaindew.png" width="24px" height="24px" alt="Mountain Dew">) into code, use tabs over spaces and never brake production.
+                      I turn coffee <img src="https://cdn3.emoji.gg/emojis/26539-coffe.png" width="24px" height="24px" alt="Coffee"> (and Mountain Dew <img src="https://cdn3.emoji.gg/emojis/Mountaindew.png" width="24px" height="24px" alt="Mountain Dew">) into code, use tabs over spaces and never brake production.
 baseurl             : ""            # Change to empty quotes if you are hosting your site at <your-username>.github.io directly
 repository          : MichalAFerber/michalferber      # Change to <your-username>/<your-username>.github.io (or remove it if you don't need remote projects)
 remote_theme        : yousinix/portfolYOU
@@ -44,7 +44,7 @@ author:
 # twitch            : your_username
   twitter           : MichalAFerber
 # vimeo             : your_username
-# youtube           : your_channel_name
+  youtube           : MichalAFerber
   keybase           : MichalAFerber
   telegram           : MichalAFerber
 
@@ -64,7 +64,7 @@ collections:
 
 ### Disqus ###
 disqus:
-  shortname: your-short-name-disqus                     # Your website Shortname on disqus
+  shortname:                      # Your website Shortname on disqus
 
 
 ### Analytics ###
@@ -77,8 +77,8 @@ analytics:
 ### Buy me a coffee ###
 # See https://www.buymeacoffee.com/
 buymeacoffee:
-  enabled: false
-  username: your_username
+  enabled: true
+  username: MichalAFerber
   color: "#007bff"
   message: "Thank you for visiting."                    # Message to be displayed aside from the button for a few seconds.
   description: "Support me on Buy me a coffee!"
