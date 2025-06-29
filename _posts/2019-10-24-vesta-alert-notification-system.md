@@ -11,4 +11,4 @@ color: warning
 
 I had the opportunity to present and share my thoughts on emergency communication and how GIS can play a role at the South Carolina ARC GIS conference.
 
-2019-10-24-SCARC-Fall-Program.pdf
+{% include adobe.html id='2019-10-24-SCARC-Fall-Program.pdf' %}  

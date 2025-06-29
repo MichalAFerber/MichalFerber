@@ -97,7 +97,7 @@
 
 <p><img src="/assets/img/raspberry-pi's.jpg" alt="Raspberry Pi models" /></p>
 
-<h1 id="how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming"><strong>How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming</strong></h1>
+<h2 id="how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming"><strong>How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming</strong></h2>
 
 <p>I recently completed a project using the Pi Zero 2 W and the Camera Module 3. My goal was to stream a live feed from the camera and use WebRTC to integrate it with HTML. After some trial and error, I found MediaMTX to be the best package for WebRTC. I wouldn’t have been able to do this without stumbling upon a helpful Reddit post.</p>
 
@@ -115,138 +115,131 @@
 <h2 id="making-it-all-work">Making it all work</h2>
 
 <ol>
-  <li><strong>Set up your SD card using Raspberry Pi Imager:</strong></li>
+  <li>
+    <p><strong>Set up your SD card using Raspberry Pi Imager:</strong></p>
+
+    <ul>
+      <li><strong>Device:</strong> Raspberry Pi Zero 2 W</li>
+      <li><strong>OS:</strong> Raspberry Pi OS (other) -&gt; Raspberry Pi OS Lite (32-bit) (Bookworm, No GUI)</li>
+      <li>Configure settings to set up your user/pass and SSID for Wi-Fi.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>After the first boot, update your Pi:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>apt update
+ <span class="nb">sudo </span>apt full-upgrade
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Install the libcamera apps (drivers for the camera):</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>apt <span class="nb">install </span>libcamera-apps
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Test to ensure the camera is recognized by the Pi:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> libcamera-hello <span class="nt">--list-cameras</span>
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>You should see output similar to this:</p>
+    </blockquote>
+
+    <p><img src="https://i.ibb.co/Lr9gD1j/libcamera-hello.png" alt="image" /></p>
+  </li>
+  <li>
+    <p><strong>Download and uncompress MediaMTX:</strong></p>
+
+    <pre><code class="language-`bash"> wget https://github.com/bluenviron/mediamtx/releases/download/v1.9.0/mediamtx_v1.9.0_linux_armv7.tar.gz
+ tar -xvzf mediamtx_v1.9.0_linux_armv7.tar.gz
+</code></pre>
+  </li>
+  <li>
+    <p><strong>Remove the LICENSE file (make sure to read it first): (optional)</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">rm</span> <span class="o">-</span><span class="nx">rf</span> <span class="nx">LICENSE</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Move the files to the correct locations and set permissions:</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span>
+ <span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">yml</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span>
+ <span class="nx">sudo</span> <span class="nx">chmod</span> <span class="o">+</span><span class="nx">x</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">mediamtx</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Modify the YAML configuration file:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>nano /usr/local/etc/mediamtx.yml
+</code></pre></div>    </div>
+
+    <p>Scroll to the bottom and add the following under <code class="language-plaintext highlighter-rouge">paths:</code>:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> paths:
+   cam:
+     <span class="nb">source</span>: rpiCamera
+</code></pre></div>    </div>
+
+    <p>Ensure proper indentation (2 spaces per level). Save and exit nano (<code class="language-plaintext highlighter-rouge">Ctrl + O</code>, <code class="language-plaintext highlighter-rouge">Ctrl + X</code>).</p>
+
+    <blockquote>
+      <p><code class="language-plaintext highlighter-rouge">Optional</code></p>
+
+      <p>I also change <code class="language-plaintext highlighter-rouge">rpiCameraTextOverlayEnable = true</code> and I set a description in the <code class="language-plaintext highlighter-rouge">rpiCameraTextOverlay</code>. These settings are just above the paths in the rpi section. You can refer &gt; to the documentation for this.</p>
+    </blockquote>
+
+    <p><a href="https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras">https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras</a></p>
+  </li>
+  <li>
+    <p><strong>Set up the service file:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo tee</span> /etc/systemd/system/mediamtx.service <span class="o">&gt;</span>/dev/null <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+ [Unit]
+ Wants=network.target
+ [Service]
+ ExecStart=/usr/local/bin/mediamtx /usr/local/etc/mediamtx.yml
+ [Install]
+ WantedBy=multi-user.target
+</span><span class="no"> EOF
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Set up the daemon, enable the service, start the service, and check its status:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>systemctl daemon-reload
+ <span class="nb">sudo </span>systemctl <span class="nb">enable </span>mediamtx
+ <span class="nb">sudo </span>systemctl start mediamtx
+ <span class="nb">sudo </span>systemctl status mediamtx
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>The status output should look something like this:</p>
+    </blockquote>
+
+    <p><img src="https://i.ibb.co/WfwyDXc/service-status.png" alt="image" /></p>
+  </li>
+  <li>
+    <p><strong>If you encounter any errors, check the service log file:</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">journalctl</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">service</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Verify everything is working by visiting:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> http://yourIPaddress:8889/cam
+</code></pre></div>    </div>
+
+    <p>You should see a live video feed.</p>
+
+    <p><img src="https://i.ibb.co/NsfJRCs/camera-feed.png" alt="image" /></p>
+
+    <p>Hope this helps!</p>
+  </li>
 </ol>
-
-<ul>
-  <li><strong>Device:</strong> Raspberry Pi Zero 2 W</li>
-  <li><strong>OS:</strong> Raspberry Pi OS (other) -&gt; Raspberry Pi OS Lite (32-bit) (Bookworm, No GUI)</li>
-  <li>Configure settings to set up your user/pass and SSID for Wi-Fi.</li>
-</ul>
-
-<ol>
-  <li><strong>After the first boot, update your Pi:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">apt</span> <span class="nx">update</span>
-<span class="nx">sudo</span> <span class="nx">apt</span> <span class="nx">full</span><span class="o">-</span><span class="nx">upgrade</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Install the libcamera apps (drivers for the camera):</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">apt</span> <span class="nx">install</span> <span class="nx">libcamera</span><span class="o">-</span><span class="nx">apps</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Test to ensure the camera is recognized by the Pi:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">libcamera</span><span class="o">-</span><span class="nx">hello</span> <span class="o">--</span><span class="nx">list</span><span class="o">-</span><span class="nx">cameras</span>
-</code></pre></div></div>
-
-<blockquote>
-  <p>You should see output similar to this:</p>
-</blockquote>
-
-<p><img src="https://i.ibb.co/Lr9gD1j/libcamera-hello.png" alt="image" /></p>
-
-<ol>
-  <li><strong>Download and uncompress MediaMTX:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">wget</span> <span class="nx">https</span><span class="p">:</span><span class="c1">//github.com/bluenviron/mediamtx/releases/download/v1.9.0/mediamtx_v1.9.0_linux_armv7.tar.gz</span>
-<span class="nx">tar</span> <span class="o">-</span><span class="nx">xvzf</span> <span class="nx">mediamtx_v1</span><span class="p">.</span><span class="mf">9.0</span><span class="nx">_linux_armv7</span><span class="p">.</span><span class="nx">tar</span><span class="p">.</span><span class="nx">gz</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Remove the LICENSE file (make sure to read it first): (optional)</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">rm</span> <span class="o">-</span><span class="nx">rf</span> <span class="nx">LICENSE</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Move the files to the correct locations and set permissions:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span>
-<span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">yml</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span>
-<span class="nx">sudo</span> <span class="nx">chmod</span> <span class="o">+</span><span class="nx">x</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">mediamtx</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Modify the YAML configuration file:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">nano</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">mediamtx</span><span class="p">.</span><span class="nx">yml</span>
-</code></pre></div></div>
-
-<p>Scroll to the bottom and add the following under <code class="language-plaintext highlighter-rouge">paths:</code>:</p>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">paths</span><span class="p">:</span>
-  <span class="nx">cam</span><span class="p">:</span>
-    <span class="nx">source</span><span class="p">:</span> <span class="nx">rpiCamera</span>
-</code></pre></div></div>
-
-<p>Ensure proper indentation (2 spaces per level). Save and exit nano (<code class="language-plaintext highlighter-rouge">Ctrl + O</code>, <code class="language-plaintext highlighter-rouge">Ctrl + X</code>).</p>
-
-<p><strong>(optional)</strong></p>
-
-<p>I also change ==rpiCameraTextOverlayEnable== = true and I set a description in the ==rpiCameraTextOverlay==. These settings are just above the paths in the rpi section. You can refer to the documentation for this.</p>
-
-<p><a href="https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras">https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras</a></p>
-
-<ol>
-  <li><strong>Set up the service file:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">tee</span> <span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">systemd</span><span class="o">/</span><span class="nx">system</span><span class="o">/</span><span class="nx">mediamtx</span><span class="p">.</span><span class="nx">service</span> <span class="o">&gt;</span><span class="sr">/dev/</span><span class="kc">null</span> <span class="o">&lt;&lt;</span> <span class="nx">EOF</span>
-<span class="p">[</span><span class="nx">Unit</span><span class="p">]</span>
-<span class="nx">Wants</span><span class="o">=</span><span class="nx">network</span><span class="p">.</span><span class="nx">target</span>
-<span class="p">[</span><span class="nx">Service</span><span class="p">]</span>
-<span class="nx">ExecStart</span><span class="o">=</span><span class="sr">/usr/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">mediamtx</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">mediamtx</span><span class="p">.</span><span class="nx">yml</span>
-<span class="p">[</span><span class="nx">Install</span><span class="p">]</span>
-<span class="nx">WantedBy</span><span class="o">=</span><span class="nx">multi</span><span class="o">-</span><span class="nx">user</span><span class="p">.</span><span class="nx">target</span>
-<span class="nx">EOF</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Set up the daemon, enable the service, start the service, and check its status:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">systemctl</span> <span class="nx">daemon</span><span class="o">-</span><span class="nx">reload</span>
-<span class="nx">sudo</span> <span class="nx">systemctl</span> <span class="nx">enable</span> <span class="nx">mediamtx</span>
-<span class="nx">sudo</span> <span class="nx">systemctl</span> <span class="nx">start</span> <span class="nx">mediamtx</span>
-<span class="nx">sudo</span> <span class="nx">systemctl</span> <span class="nx">status</span> <span class="nx">mediamtx</span>
-</code></pre></div></div>
-
-<blockquote>
-  <p>The status output should look something like this:</p>
-</blockquote>
-
-<p><img src="https://i.ibb.co/WfwyDXc/service-status.png" alt="image" /></p>
-
-<ol>
-  <li><strong>If you encounter any errors, check the service log file:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">sudo</span> <span class="nx">journalctl</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">service</span>
-</code></pre></div></div>
-
-<ol>
-  <li><strong>Verify everything is working by visiting:</strong></li>
-</ol>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">http</span><span class="p">:</span><span class="c1">//yourIPaddress:8889/cam</span>
-</code></pre></div></div>
-
-<p>You should see a live video feed.</p>
-
-<p><img src="https://i.ibb.co/NsfJRCs/camera-feed.png" alt="image" /></p>
-
-<p>Hope this helps!</p>
 
 
 

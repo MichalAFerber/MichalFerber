@@ -11,7 +11,7 @@ Hi I am **{{ site.author.name }}** :wave:,
 
 As a homeschooled kid in small-town South Carolina, I was extremely interested in computers. Once I realized I had an affinity for technology, I never looked back. After graduating a couple of years early from high school, I began my career on graduation day with an internship at a local system integrator shop. I went on to delve into programming, network infrastructure, telephony, and more.
 
-Over my career in IT spanning more than 27+ years, I’ve collected many IT certifications [Microsoft, Google, Citrix, Ascom, Genesys, Milestone VMS, C-Cure 9000, etc.], and I even earned my Microsoft MCSE NT 4.0 in the early years. Here recently, I’m currently investing lots of time in Google workspace and Google cloud.
+Over my career in IT spanning more than 30+ years, I’ve collected many IT certifications [Microsoft, Google, Citrix, Ascom, Genesys, Milestone VMS, C-Cure 9000, etc.], and I even earned my Microsoft MCSE NT 4.0 in the early years. Here recently, I’m currently investing lots of time in Google workspace and Google cloud.
 
 <div class="row">
 {% include about/skills.html title="Programming Skills" source=site.data.programming-skills %}

@@ -13,6 +13,8 @@ The economic downturn has forced organizations to think outside the box to maint
 
 Michal Ferber is the manager of telecommunications for McLeod Health. McLeod Health is an integrated healthcare delivery system with three hospitals, home health, and a large physician organization.  
 
-2010-03-21-DRJ-Spring-World-2010-Presentation.pdf
+{% include adobe.html id='2010-03-21-DRJ-Spring-World-2010-Presentation.pdf' %}  
 
-2010-03-21-DRJ-Spring-World-2010-1.pdf
+***
+  
+{% include adobe-2.html id='2010-03-21-DRJ-Spring-World-2010-1.pdf' %}  

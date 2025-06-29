@@ -93,7 +93,20 @@
 
 <p><img src="/assets/img/mcleod-health-parking-deck.jpg" alt="McLeod Health" /></p>
 
-<p>2016-11-30_McLeod_Health_Case_Study.pdf</p>
+<div id="adobe-dc-view" class="adobe-dc-view" style="height: 780px; width: 100%; border: 1px solid #dadada;"></div>
+<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
+
+<script>
+    document.addEventListener("adobe_dc_view_sdk.ready", function () {
+        var adobeDCView = new AdobeDC.View({ clientId: "fba40d5e44694e09a7a97edad695607a", divId: "adobe-dc-view" });
+        adobeDCView.previewFile(
+            {
+                content: { location: { url: "/media/documents/2016-11-30_McLeod_Health_Case_Study.pdf" } },
+                metaData: { fileName: "2016-11-30_McLeod_Health_Case_Study.pdf" }
+            }, { defaultViewMode: "FIT_PAGE" });
+    });
+</script>
+
 
 
 

@@ -13,7 +13,7 @@ As a tech enthusiast, I couldn’t resist diving into the collaboration between 
 
 After downloading and installing Standard Notes on my Mac, I stumbled upon Listed—a free tool integrated with Standard Notes. Naturally, I had to give it a shot. And so, here I am.
 
-```
+```bash
 main( ) {  
   printf("hello, world");  
 }

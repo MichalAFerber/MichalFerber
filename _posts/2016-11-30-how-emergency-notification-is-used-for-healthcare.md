@@ -9,4 +9,4 @@ color: danger
 
 ![McLeod Health](/assets/img/mcleod-health-parking-deck.jpg)
 
-2016-11-30_McLeod_Health_Case_Study.pdf
+{% include adobe.html id='2016-11-30_McLeod_Health_Case_Study.pdf' %}  
