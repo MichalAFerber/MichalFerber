@@ -3,7 +3,7 @@ title: Vesta Alert Notification System
 description: South Carolina ARC GIS conference
 tags: [Emergency Notification, Emergency Communications]
 comments: true
-style: border
+style: fill
 color: warning
 ---
 

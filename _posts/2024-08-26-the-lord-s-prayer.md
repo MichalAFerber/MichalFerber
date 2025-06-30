@@ -3,8 +3,8 @@ title: The Lord's Prayer
 description: [The Aramaic Prayer of Jesus (Original transliteration and translation from the Peshitta (Syriac-Aramaic)]
 tags: [Religion, Theology, God, Prayer]
 comments: true
-style: border
-color: secondary
+style: fill
+color: light
 ---
 
 ![The Lord's Prayer](/assets/img/the-lords-prayer.jpg)

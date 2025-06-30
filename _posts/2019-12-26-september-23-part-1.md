@@ -3,8 +3,8 @@ title: "September 2 – Part 1"
 description: A personal story
 tags: [Jesus, God, Holy Spirit, Christianity]
 comments: true
-style: border
-color: info
+style: fill
+color: success
 ---
 
 ![Road Path](/assets/img/road-path.jpg)

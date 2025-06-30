@@ -3,7 +3,7 @@ title: The new Admin On-Demand feature in the Mosyle MDM
 description: A How To Guide.
 tags: [How To, MDM, Mosyle]
 comments: true
-style: border
+style: fill
 color: primary
 ---
 

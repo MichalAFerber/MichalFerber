@@ -3,8 +3,8 @@ title: An open letter to Christians everywhere (including me)
 description: From the heart
 tags: [Jesus, God, Holy Spirit, Christianity]
 comments: true
-style: border
-color: info
+style: fill
+color: success
 ---
 
 ![Letter](/assets/img/letter.jpg)

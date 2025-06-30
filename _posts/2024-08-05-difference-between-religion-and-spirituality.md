@@ -3,8 +3,8 @@ title: Difference between religion and spirituality
 description: Or at least my take on it.
 tags: [Religion, Theology, God]
 comments: true
-style: border
-color: secondary
+style: fill
+color: light
 ---
 
 ![Religious Faith](/assets/img/religious-faith.jpg)

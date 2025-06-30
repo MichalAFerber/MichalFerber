@@ -3,8 +3,8 @@ title: "Stars We Lost in 2019"
 description: Year in review
 tags: [Jesus, God, Holy Spirit, Christianity, Hollywood, Stars, Celebrities, "2019"]
 comments: true
-style: border
-color: info
+style: fill
+color: success
 ---
 
 ![Year in review](/assets/img/year-in-review-2019.png)

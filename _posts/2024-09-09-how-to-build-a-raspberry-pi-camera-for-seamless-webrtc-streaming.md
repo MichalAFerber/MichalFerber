@@ -3,7 +3,7 @@ title: How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming
 description: Using the Pi Zero 2 W and the Camera Module 3
 tags: [Raspberry Pi, Linux, How To]
 comments: true
-style: border
+style: fill
 color: primary
 ---
 
