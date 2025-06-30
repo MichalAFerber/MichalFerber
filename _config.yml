@@ -2,7 +2,7 @@
 title               : Michal Ferber
 description         : >-
                       I turn coffee <img class="icon" src="/assets/img/coffee.jpg" alt="Coffee"> and Mountain Dew <img class="icon" src="/assets/img/mountain-dew.jpg" alt="Mountain Dew"> into code, use tabs over spaces and never brake production.
-open_url            : https://michalferber.me
+url                 : https://michalferber.me
 baseurl             : ""            # Change to empty quotes if you are hosting your site at <your-username>.github.io directly
 repository          : MichalAFerber/michalferber      # Change to <your-username>/<your-username>.github.io (or remove it if you don't need remote projects)
 remote_theme        : yousinix/portfolYOU
