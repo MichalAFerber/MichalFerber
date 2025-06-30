@@ -15,6 +15,7 @@ Michal Ferber is the manager of telecommunications for McLeod Health. McLeod Hea
 
 {% include adobe.html id='2010-03-21-DRJ-Spring-World-2010-Presentation.pdf' %}  
 [https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-Presentation.pdf](https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-Presentation.pdf)
+
 ***
   
 {% include adobe-2.html id='2010-03-21-DRJ-Spring-World-2010-1.pdf' %}  
