@@ -12,3 +12,4 @@ color: danger
 Interview I had about communicating with communication technology solutions.
 
 {% include adobe.html id='2014-09-05_Cassidian-Newsletter.pdf' %}  
+[https://michalferber.me/assets/docs/2014-09-05_Cassidian-Newsletter.pdf](https://michalferber.me/assets/docs/2014-09-05_Cassidian-Newsletter.pdf)

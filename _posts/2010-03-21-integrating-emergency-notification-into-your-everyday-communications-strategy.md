@@ -3,8 +3,8 @@ title: Integrating Emergency Notification into Your Everyday Communications Stra
 description: "Speaking at Disaster Recovery Journal | Spring World 2010"
 tags: [Emergency Notification, Emergency Communications]
 comments: true
-style: border
-color: danger
+style: fill
+color: warning
 ---
 
 ![McLeod Health](/assets/img/mcleod-health-campus.jpg)
@@ -14,7 +14,8 @@ The economic downturn has forced organizations to think outside the box to maint
 Michal Ferber is the manager of telecommunications for McLeod Health. McLeod Health is an integrated healthcare delivery system with three hospitals, home health, and a large physician organization.  
 
 {% include adobe.html id='2010-03-21-DRJ-Spring-World-2010-Presentation.pdf' %}  
-
+[https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-Presentation.pdf](https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-Presentation.pdf)
 ***
   
 {% include adobe-2.html id='2010-03-21-DRJ-Spring-World-2010-1.pdf' %}  
+[https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-1.pdf](https://michalferber.me/assets/docs/2010-03-21-DRJ-Spring-World-2010-1.pdf)

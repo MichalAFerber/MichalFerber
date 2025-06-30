@@ -10,3 +10,4 @@ color: danger
 ![McLeod Health](/assets/img/mcleod-health-cancer-bldg.jpg)
 
 {% include adobe.html id='2018-05-09_McLeod_Health_Case_Study.pdf' %}  
+[https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf](https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf)
