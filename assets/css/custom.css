@@ -2,3 +2,20 @@ img.icon {
   height: 32px;
   width: 32px;
 }
+.badges-container {
+  max-width: 1000px; /* Adjust as needed */
+  margin: 0 auto;
+}
+.badges-container .carousel-item img {
+  max-width: 33%;
+  margin: 0 auto;
+  padding: 40px;
+  display: block;
+  object-fit: contain;
+}
+.certifications-container .carousel-item img {
+  margin: 0 auto;
+  padding: 40px;
+  display: block;
+  object-fit: contain;
+}
