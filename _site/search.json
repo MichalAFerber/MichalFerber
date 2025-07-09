@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "Custom Linux Welcome Message Guide",
+      "category" : "",
+      "tags"     : "Linux, How To",
+      "url"      : "/blog/custom-linux-welcome-message",
+      "date"     : "2025-07-07 00:00:00 -0400"
+    } ,
+  
+    {
       "title"    : "How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming",
       "category" : "",
       "tags"     : "Raspberry Pi, Linux, How To",

@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-07-08T22:32:05-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Michal Ferber</title><subtitle>I turn coffee &lt;img class=&quot;icon&quot; src=&quot;/assets/img/coffee.jpg&quot; alt=&quot;Coffee&quot;&gt; and Mountain Dew &lt;img class=&quot;icon&quot; src=&quot;/assets/img/mountain-dew.jpg&quot; alt=&quot;Mountain Dew&quot;&gt; into code, use tabs over spaces and never brake production.</subtitle><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><entry><title type="html">Custom Linux Welcome Message Guide</title><link href="http://localhost:4000/blog/custom-linux-welcome-message" rel="alternate" type="text/html" title="Custom Linux Welcome Message Guide" /><published>2025-07-07T00:00:00-04:00</published><updated>2025-07-07T00:00:00-04:00</updated><id>http://localhost:4000/blog/custom-linux-welcome-message</id><content type="html" xml:base="http://localhost:4000/blog/custom-linux-welcome-message"><![CDATA[<p><a href="https://github.com/fastfetch-cli/fastfetch"><img src="/assets/img/fastfetch.png" alt="fastfetch-cli" /></a></p>
+
+<p>This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.</p>
+
+<p>You’ll get:</p>
+
+<ul>
+  <li>A full <code class="language-plaintext highlighter-rouge">fastfetch</code> system overview</li>
+  <li>Colored greeting</li>
+  <li>Uptime and load average</li>
+  <li>Public IP</li>
+  <li>Disk usage</li>
+  <li>Update check</li>
+  <li>Raspberry Pi temperature and throttle status (if applicable)</li>
+  <li>Weather for your location</li>
+  <li>A custom message (“Whiskey, Tango, Foxtrot!”)</li>
+</ul>
+
+<hr />
+
+<h2 id="-step-1-create-the-welcome-script">✅ Step 1: Create the Welcome Script</h2>
+
+<p>Create a new script in your home directory:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano ~/welcome.sh
+</code></pre></div></div>
+
+<p>Paste the following code into the file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+clear
+fastfetch
+
+<span class="nv">CYAN</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;36m"</span>
+<span class="nv">YELLOW</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;33m"</span>
+<span class="nv">GREEN</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;32m"</span>
+<span class="nv">RED</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;31m"</span>
+<span class="nv">NC</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[0m"</span> <span class="c"># No Color</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">Hello, </span><span class="nv">$USER</span><span class="s2">!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">Uptime: </span><span class="si">$(</span><span class="nb">uptime</span> <span class="nt">-p</span><span class="si">)</span><span class="s2"> | Load Average: </span><span class="si">$(</span><span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">' '</span> <span class="nt">-f1-3</span> /proc/loadavg<span class="si">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nv">PUBIP</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> ifconfig.me<span class="si">)</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">Public IP: </span><span class="nv">$PUBIP</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">Disk Usage on /:</span><span class="si">$(</span><span class="nb">df</span> <span class="nt">-h</span> / | <span class="nb">awk</span> <span class="s1">'NR==2 {print \" \" \$3 \" used of \" \$2 \" (\" \$5 \")\"}'</span><span class="si">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="k">if </span><span class="nb">command</span> <span class="nt">-v</span> apt <span class="o">&gt;</span>/dev/null 2&gt;&amp;1<span class="p">;</span> <span class="k">then
+    </span><span class="nv">UPDATES</span><span class="o">=</span><span class="si">$(</span>apt list <span class="nt">--upgradeable</span> 2&gt;/dev/null | <span class="nb">grep</span> <span class="nt">-v</span> <span class="s2">"Listing..."</span> | <span class="nb">wc</span> <span class="nt">-l</span><span class="si">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$UPDATES</span><span class="s2">"</span> <span class="nt">-gt</span> 0 <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">Updates available: </span><span class="nv">$UPDATES</span><span class="s2"> package(s)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">else
+        </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">Your system is up to date.</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">fi
+fi
+
+if</span> <span class="o">[</span> <span class="nt">-f</span> /var/run/reboot-required <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">⚠️  Reboot required!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="k">fi
+
+if </span><span class="nb">command</span> <span class="nt">-v</span> vcgencmd &amp;&gt;/dev/null<span class="p">;</span> <span class="k">then
+    </span><span class="nv">TEMP</span><span class="o">=</span><span class="si">$(</span>vcgencmd measure_temp | <span class="nb">cut</span> <span class="nt">-d</span><span class="o">=</span> <span class="nt">-f2</span><span class="si">)</span>
+    <span class="nv">THROTTLED_RAW</span><span class="o">=</span><span class="si">$(</span>vcgencmd get_throttled | <span class="nb">cut</span> <span class="nt">-d</span><span class="o">=</span> <span class="nt">-f2</span><span class="si">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$THROTTLED_RAW</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"0x0"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nv">THROTTLE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">Yes (</span><span class="nv">$THROTTLED_RAW</span><span class="s2">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">else
+        </span><span class="nv">THROTTLE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">No</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">fi
+    </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">CPU Temp: </span><span class="nv">$TEMP</span><span class="s2"> | Throttled: </span><span class="nv">$THROTTLE_STATUS</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="k">fi
+
+</span><span class="nv">WEATHER</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s1">'wttr.in/Lake+City?format=3'</span><span class="si">)</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">Weather: </span><span class="nv">$WEATHER</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">You are good to go for Whiskey, Tango, Foxtrot!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>Save and exit the file (<code class="language-plaintext highlighter-rouge">Ctrl+O</code>, <code class="language-plaintext highlighter-rouge">Enter</code>, then <code class="language-plaintext highlighter-rouge">Ctrl+X</code>).
+Make it executable:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x ~/welcome.sh
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="️-step-2-run-script-on-terminal-login">⚙️ Step 2: Run Script on Terminal Login</h2>
+
+<p>Add it to your shell’s startup config.</p>
+
+<h3 id="-for-zsh-default-on-kali-macos">🔹 For Zsh (default on Kali, macOS)</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'\nif [ -x "$HOME/welcome.sh" ]; then\n "$HOME/welcome.sh"\nfi'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+</code></pre></div></div>
+
+<h3 id="-for-bash">🔹 For Bash</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'\nif [ -x "$HOME/welcome.sh" ]; then\n    "$HOME/welcome.sh"\nfi'</span> <span class="o">&gt;&gt;</span> ~/.bashrc
+</code></pre></div></div>
+
+<p>Then apply the changes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.zshrc   <span class="c"># or ~/.bashrc depending on your shell</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-optional-system-wide-setup-for-all-users">🌍 Optional: System-Wide Setup (for All Users)</h2>
+
+<p>To show the welcome message for every user on the system, copy the script to <code class="language-plaintext highlighter-rouge">/etc/profile.d/</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp</span> ~/welcome.sh /etc/profile.d/welcome.sh 
+<span class="nb">sudo chmod</span> +x /etc/profile.d/welcome.sh
+</code></pre></div></div>
+
+<p>It will run for any interactive login shell across all users.</p>
+
+<hr />
+
+<h2 id="-step-3-install-required-packages">🔌 Step 3: Install Required Packages</h2>
+
+<p>Install the needed tools:</p>
+
+<h3 id="debianubuntukali">Debian/Ubuntu/Kali</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt update <span class="nb">sudo </span>apt <span class="nb">install </span>fastfetch curl libraspberrypi-bin
+</code></pre></div></div>
+
+<h3 id="fedora">Fedora</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>dnf <span class="nb">install </span>fastfetch curl libraspberrypi-tools
+</code></pre></div></div>
+
+<h3 id="arch">Arch</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>pacman <span class="nt">-Sy</span> fastfetch curl raspberrypi-firmware
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-step-4-test-it">🧪 Step 4: Test It</h2>
+
+<p>Simply run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/welcome.sh
+</code></pre></div></div>
+
+<p>Or open a new terminal or SSH session to see the welcome message in action.</p>
+
+<hr />
+
+<h2 id="-notes">🧠 Notes</h2>
+
+<ul>
+  <li>
+    <p>The update check and reboot prompt only work on Debian-based systems.</p>
+  </li>
+  <li>
+    <p>Raspberry Pi-specific temp/throttle requires <code class="language-plaintext highlighter-rouge">vcgencmd</code> (from <code class="language-plaintext highlighter-rouge">libraspberrypi-bin</code>).</p>
+  </li>
+  <li>
+    <p>Change the weather location in the script (<code class="language-plaintext highlighter-rouge">Lake+City</code>) to match your area or use IP-based geolocation.</p>
+  </li>
+  <li>
+    <p>You can customize the colors, messages, or add even more functionality (like Docker container status, CPU graph, etc.).</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="-result-example">🎉 Result Example</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello, michal!
+Uptime: up 3 hours, 2 minutes | Load Average: 0.15 0.10 0.08
+Public IP: 75.176.xxx.xxx
+Disk Usage on /: 13G used of 58G <span class="o">(</span>22%<span class="o">)</span>
+Updates available: 3 package<span class="o">(</span>s<span class="o">)</span>
+CPU Temp: 43.8°C | Throttled: No
+Weather: Lake City: 🌤 +91°F
+You are good to go <span class="k">for </span>Whiskey, Tango, Foxtrot!
+</code></pre></div></div>
+
+<p><img src="/assets/img/welcome-message.png" alt="Screenshot" /></p>
+
+<hr />
+
+<p>Enjoy your custom login experience, Commander. 🛫</p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Linux" /><category term="How To" /><summary type="html"><![CDATA[This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.]]></summary></entry><entry><title type="html">How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming</title><link href="http://localhost:4000/blog/how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming" rel="alternate" type="text/html" title="How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming" /><published>2024-09-09T00:00:00-04:00</published><updated>2024-09-09T00:00:00-04:00</updated><id>http://localhost:4000/blog/how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming</id><content type="html" xml:base="http://localhost:4000/blog/how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming"><![CDATA[<p><img src="/assets/img/raspberry-pis.jpg" alt="Raspberry Pi models" /></p>
+
+<h2 id="how-to-build-a-raspberry-pi-camera-for-seamless-webrtc-streaming"><strong>How to Build a Raspberry Pi Camera for Seamless WebRTC Streaming</strong></h2>
+
+<p>I recently completed a project using the Pi Zero 2 W and the Camera Module 3. My goal was to stream a live feed from the camera and use WebRTC to integrate it with HTML. After some trial and error, I found MediaMTX to be the best package for WebRTC. I wouldn’t have been able to do this without stumbling upon a helpful Reddit post.</p>
+
+<h2 id="hardware--operating-system">Hardware &amp; Operating System</h2>
+
+<ul>
+  <li><strong>Pi Zero 2 W</strong></li>
+  <li><strong>Pi Camera Module 3</strong></li>
+  <li><strong>Pi 12.5W Micro USB Power Supply</strong></li>
+  <li><strong>Pi Zero Case</strong></li>
+  <li><strong>SanDisk Extreme PRO SDHC And SDXC UHS-I Card</strong></li>
+  <li><strong>Pi OS Lite (32-bit)</strong></li>
+</ul>
+
+<h2 id="making-it-all-work">Making it all work</h2>
+
+<ol>
+  <li>
+    <p><strong>Set up your SD card using Raspberry Pi Imager:</strong></p>
+
+    <ul>
+      <li><strong>Device:</strong> Raspberry Pi Zero 2 W</li>
+      <li><strong>OS:</strong> Raspberry Pi OS (other) -&gt; Raspberry Pi OS Lite (32-bit) (Bookworm, No GUI)</li>
+      <li>Configure settings to set up your user/pass and SSID for Wi-Fi.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>After the first boot, update your Pi:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>apt update
+ <span class="nb">sudo </span>apt full-upgrade
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Install the libcamera apps (drivers for the camera):</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>apt <span class="nb">install </span>libcamera-apps
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Test to ensure the camera is recognized by the Pi:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> libcamera-hello <span class="nt">--list-cameras</span>
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>You should see output similar to this:</p>
+    </blockquote>
+
+    <p><img src="https://i.ibb.co/Lr9gD1j/libcamera-hello.png" alt="image" /></p>
+  </li>
+  <li>
+    <p><strong>Download and uncompress MediaMTX:</strong></p>
+
+    <pre><code class="language-`bash"> wget https://github.com/bluenviron/mediamtx/releases/download/v1.9.0/mediamtx_v1.9.0_linux_armv7.tar.gz
+ tar -xvzf mediamtx_v1.9.0_linux_armv7.tar.gz
+</code></pre>
+  </li>
+  <li>
+    <p><strong>Remove the LICENSE file (make sure to read it first): (optional)</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">rm</span> <span class="o">-</span><span class="nx">rf</span> <span class="nx">LICENSE</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Move the files to the correct locations and set permissions:</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span>
+ <span class="nx">sudo</span> <span class="nx">mv</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">yml</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span>
+ <span class="nx">sudo</span> <span class="nx">chmod</span> <span class="o">+</span><span class="nx">x</span> <span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">local</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">mediamtx</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Modify the YAML configuration file:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>nano /usr/local/etc/mediamtx.yml
+</code></pre></div>    </div>
+
+    <p>Scroll to the bottom and add the following under <code class="language-plaintext highlighter-rouge">paths:</code>:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> paths:
+   cam:
+     <span class="nb">source</span>: rpiCamera
+</code></pre></div>    </div>
+
+    <p>Ensure proper indentation (2 spaces per level). Save and exit nano (<code class="language-plaintext highlighter-rouge">Ctrl + O</code>, <code class="language-plaintext highlighter-rouge">Ctrl + X</code>).</p>
+
+    <blockquote>
+      <p><code class="language-plaintext highlighter-rouge">Optional</code></p>
+
+      <p>I also change <code class="language-plaintext highlighter-rouge">rpiCameraTextOverlayEnable = true</code> and I set a description in the <code class="language-plaintext highlighter-rouge">rpiCameraTextOverlay</code>. These settings are just above the paths in the rpi section. You can refer &gt; to the documentation for this.</p>
+    </blockquote>
+
+    <p><a href="https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras">https://github.com/bluenviron/mediamtx?tab=readme-ov-file#raspberry-pi-cameras</a></p>
+  </li>
+  <li>
+    <p><strong>Set up the service file:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo tee</span> /etc/systemd/system/mediamtx.service <span class="o">&gt;</span>/dev/null <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+ [Unit]
+ Wants=network.target
+ [Service]
+ ExecStart=/usr/local/bin/mediamtx /usr/local/etc/mediamtx.yml
+ [Install]
+ WantedBy=multi-user.target
+</span><span class="no"> EOF
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Set up the daemon, enable the service, start the service, and check its status:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>systemctl daemon-reload
+ <span class="nb">sudo </span>systemctl <span class="nb">enable </span>mediamtx
+ <span class="nb">sudo </span>systemctl start mediamtx
+ <span class="nb">sudo </span>systemctl status mediamtx
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>The status output should look something like this:</p>
+    </blockquote>
+
+    <p><img src="https://i.ibb.co/WfwyDXc/service-status.png" alt="image" /></p>
+  </li>
+  <li>
+    <p><strong>If you encounter any errors, check the service log file:</strong></p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">sudo</span> <span class="nx">journalctl</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">mediamtx</span><span class="p">.</span><span class="nx">service</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Verify everything is working by visiting:</strong></p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> http://yourIPaddress:8889/cam
+</code></pre></div>    </div>
+
+    <p>You should see a live video feed.</p>
+
+    <p><img src="https://i.ibb.co/NsfJRCs/camera-feed.png" alt="image" /></p>
+
+    <p>Hope this helps!</p>
+  </li>
+</ol>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Raspberry Pi" /><category term="Linux" /><category term="How To" /><summary type="html"><![CDATA[Using the Pi Zero 2 W and the Camera Module 3]]></summary></entry><entry><title type="html">The Lord’s Prayer</title><link href="http://localhost:4000/blog/the-lord-s-prayer" rel="alternate" type="text/html" title="The Lord’s Prayer" /><published>2024-08-26T00:00:00-04:00</published><updated>2024-08-26T00:00:00-04:00</updated><id>http://localhost:4000/blog/the-lord-s-prayer</id><content type="html" xml:base="http://localhost:4000/blog/the-lord-s-prayer"><![CDATA[<p><img src="/assets/img/the-lords-prayer.jpg" alt="The Lord's Prayer" /></p>
+
+<p>O Birther! Father-Mother of the Cosmos, you create all that moves in light.</p>
+
+<p>Focus your light within us — make it useful: as the rays of a beacon show the way.</p>
+
+<p>Unite our “I can” to yours, so that we walk as kings and queens with every creature.</p>
+
+<p>Create in me a divine cooperation — from many selves, one voice, one action.</p>
+
+<p>Grant what we need each day in bread and insight: subsistence for the call of growing life.</p>
+
+<p>Forgive our hidden past, the secret shames, as we consistently forgive what others hide.</p>
+
+<p>Deceived neither by the outer nor the inner — free us to walk your path with joy.</p>
+
+<p>From you is born all ruling will, the power and life to do, the song that beautifies all from age to age it renews.</p>
+
+<p>Amen</p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Religion" /><category term="Theology" /><category term="God" /><category term="Prayer" /><summary type="html"><![CDATA[["The Aramaic Prayer of Jesus (Original transliteration and translation from the Peshitta (Syriac-Aramaic)"]]]></summary></entry><entry><title type="html">Difference between religion and spirituality</title><link href="http://localhost:4000/blog/difference-between-religion-and-spirituality" rel="alternate" type="text/html" title="Difference between religion and spirituality" /><published>2024-08-05T00:00:00-04:00</published><updated>2024-08-05T00:00:00-04:00</updated><id>http://localhost:4000/blog/difference-between-religion-and-spirituality</id><content type="html" xml:base="http://localhost:4000/blog/difference-between-religion-and-spirituality"><![CDATA[<p><img src="/assets/img/religious-faith.jpg" alt="Religious Faith" /></p>
+
+<p>Once a wise man was asked to explain the difference between religion and spirituality</p>
+
+<p>His response was profound:</p>
+
+<ul>
+  <li>Religion is not just one, there are many</li>
+  <li>Spirituality is one</li>
+  <li>Religion is for those who sleep</li>
+  <li>Spirituality is for those who are awake</li>
+  <li>Religion is for those who need someone to tell them what to do and who want guidance</li>
+  <li>Spirituality is for those who pay attention to their inner voice</li>
+  <li>Religion has dogmatic rules</li>
+  <li>Spirituality calls us to discuss everything, question everything</li>
+  <li>Religion threatens and scares</li>
+  <li>Spirituality gives inner peace</li>
+  <li>Religion talks about sin and guilt</li>
+  <li>Spirituality says “learn from your mistake”</li>
+  <li>Religion suppresses everything that is wrong</li>
+  <li>Spirituality overcomes everything, it brings you closer to the truth!</li>
+  <li>Religion is about God; It is not God</li>
+  <li>Spirituality is everything and therefore it is in God</li>
+  <li>Religion is inventing</li>
+  <li>Spirituality is finding</li>
+  <li>Religion doesn’t tolerate any questions</li>
+  <li>Spirituality will question everything</li>
+  <li>Religion is humanity</li>
+  <li>This is an organization whose rules are made by men</li>
+  <li>Spirituality is divine, without human rules</li>
+  <li>Religion is the cause of division</li>
+  <li>Spirituality unites</li>
+  <li>Religion seeks you to believe</li>
+  <li>The spirituality you have to seek it to believe</li>
+  <li>Religion follows the concepts of the holy book</li>
+  <li>Spirituality looks for a holiday in all books</li>
+  <li>Religion feeds fear</li>
+  <li>Spirituality feeds trust and faith</li>
+  <li>Religion lives in thoughts</li>
+  <li>Spirituality lives in inner consciousness</li>
+  <li>Religion is dealing with the performance of rituals</li>
+  <li>Spirituality is related to the inner self</li>
+  <li>Religion feeds the ego</li>
+  <li>Spirituality forces you to go beyond</li>
+  <li>Religion makes us disconnect from the world to follow God</li>
+  <li>Spirituality makes us live in God, without giving up our existing life</li>
+  <li>Religion is a cult</li>
+  <li>Spirituality is an inner meditation</li>
+  <li>Religion fills us with dreams of glory in paradise</li>
+  <li>Spirituality makes us live in earthly glory and paradise</li>
+  <li>Religion lives in the past and in the future</li>
+  <li>Spirituality is living in the present</li>
+  <li>Religion creates monasteries in our memory</li>
+  <li>Spirituality frees our consciousness</li>
+  <li>Religion makes us believe in eternal life</li>
+  <li>Spirituality makes us aware of eternal life</li>
+  <li>Religion promises life after death</li>
+  <li>Spirituality means finding God inside us in our present life before we die</li>
+</ul>
+
+<blockquote>
+  <p>We are not human beings who are going through a mental experience
+We are spiritual beings going through the human experience
+Unknown</p>
+</blockquote>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Religion" /><category term="Theology" /><category term="God" /><summary type="html"><![CDATA[Or at least my take on it.]]></summary></entry><entry><title type="html">Hello World!</title><link href="http://localhost:4000/blog/hello-world" rel="alternate" type="text/html" title="Hello World!" /><published>2024-07-23T00:00:00-04:00</published><updated>2024-07-23T00:00:00-04:00</updated><id>http://localhost:4000/blog/hello-world</id><content type="html" xml:base="http://localhost:4000/blog/hello-world"><![CDATA[<p><img src="/assets/img/hello-world.jpg" alt="Hello World!" /></p>
+
+<p>As a tech enthusiast, I couldn’t resist diving into the collaboration between Proton and Standard Notes. Having tried almost every other note-taking app, including Joplin, I appreciate the simplicity and elegance of a clean text editor, especially when it supports Markdown.</p>
+
+<p>After downloading and installing Standard Notes on my Mac, I stumbled upon Listed—a free tool integrated with Standard Notes. Naturally, I had to give it a shot. And so, here I am.<script src="https://gist.github.com/3c466bc3c32c4ae5c9b36d1266b913d8.js"> </script></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Programming" /><category term="Code" /><summary type="html"><![CDATA[Everyone has to have one of these right?]]></summary></entry><entry><title type="html">The new Admin On-Demand feature in the Mosyle MDM</title><link href="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm" rel="alternate" type="text/html" title="The new Admin On-Demand feature in the Mosyle MDM" /><published>2022-10-26T00:00:00-04:00</published><updated>2022-10-26T00:00:00-04:00</updated><id>http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm</id><content type="html" xml:base="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm"><![CDATA[<p><img src="/assets/img/mosyle-admin-on-demand.png" alt="Mosyle Certified Administrator" /></p>
+
+<p>A new feature in the Mosyle MDM is the ability to allow users to have admin permission only when they need it. In the past, you had to use a static password that the user knew or rotate the password and then give the password when the user asks for it.</p>
+
+<p>To turn on the Admin On-Demand functionality, go to Security -&gt; Admin On-Demand -&gt; Settings. Add a new profile with the setting selections and assignments you prefer. That’s it.</p>
+
+<p><img src="/assets/img/mosyle-admin-on-demand-admin.png" alt="Mosyle Admin Console" /></p>
+
+<p>To activate, the user navigates to the Mosyle Self-Service app, clicks on Admin On-Demand, and makes the request.</p>
+
+<div class="video">
+  <iframe src="https://www.youtube.com/embed/bkIj3i2TUqI" frameborder="0" allowfullscreen=""></iframe>
+</div>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="How To" /><category term="MDM" /><category term="Mosyle" /><summary type="html"><![CDATA[A How To Guide.]]></summary></entry><entry><title type="html">September 2 – Part 1</title><link href="http://localhost:4000/blog/september-23-part-1" rel="alternate" type="text/html" title="September 2 – Part 1" /><published>2019-12-26T00:00:00-05:00</published><updated>2019-12-26T00:00:00-05:00</updated><id>http://localhost:4000/blog/september-23-part-1</id><content type="html" xml:base="http://localhost:4000/blog/september-23-part-1"><![CDATA[<p><img src="/assets/img/road-path.jpg" alt="Road Path" /></p>
+
+<p>My personal life has taken a lot of twists and turns. And as much as I have tried to control everything and be perfect in everything, I have found out the hard way that just isn’t how life works. I have also found that it’s the exact opposite of following Jesus. To follow Him, we have to lean on Him and seek His will. It has taken me 41 years to get where I am today.</p>
+
+<p>And trust me, I took a long way around.</p>
+
+<p>I’m talking regularly to a counselor now. I love talking to him because he is packed with tons of Godly wisdom and gives me a different lens through which to view things. He has helped me see that because my relationship with my earthly father wasn’t the best, which has caused lots of unresolved feelings, I was letting that affect my relationship with my heavenly Father. It caused me not to view God as the good, good Father He really is.</p>
+
+<p>My counselor and I have spent a lot of time working on how I see myself, and my identity. That’s important because that relates to my purpose. When you don’t have a solid identity, it’s easy to get tossed to and fro and let the world influence your decisions. You see, if I don’t know who I am in Christ, then I don’t know where I stand with Christ, which affects how I approach or don’t approach Jesus.</p>
+
+<p>Because my identity in Christ was skewed, I didn’t believe that I was able to really lean on God. My dad died when I was 21, and he wanted everything to be perfect, so growing up I lived in fear of disappointing him. That, in turn, has translated into me being afraid to disappoint God. I believed that if I didn’t go to God, or lean on him if I somehow subverted the Creator, then He wouldn’t know, and I wouldn’t disappoint Him.</p>
+
+<p>I am still working on my identity; I haven’t gotten that completely figured out yet. But I have found rest in knowing that finding my identity isn’t in one single thing. It isn’t a one-and-done type of test. It’s an ongoing discovery, just like working out your own salvation, just like the process of sanctification.</p>
+
+<p>What I have figured out with my identity is that I am a child of God. I love Him so much and am so thankful for His grace and mercy. And God is my favorite daddy. He is a good, good father and has been so good to me. He has kept me from so much harm and given me so much favor in my life.</p>
+
+<p>I was raised in the church, and I was at church every time the doors were open. For a period of three years, in my 2nd, 3rd, and 4th-grade years, I went to church six times a week. Even the Christian school I was attending was at my church. So, growing up in church, I knew all of this I’m telling you. I had heard it over and over. But it never made it two feet from my head to my heart.</p>
+
+<p>Then, on September 23, 2019, I had a life-changing experience and found myself at 41 years old and in handcuffs for the first time in my life. It was at that very moment that God started showing me grace as I have never experienced before in my life. Throughout the whole ordeal which lasted about eight days, everyone in my life showed me grace, the Jesus kind of grace. It was awesome and humbling. My pride was stripped away from me that night, and for the first time, I realized how vulnerable I was as a man and how out of my control life really was.</p>
+
+<p>For the first time in my life, the things I knew in my head, started making their way to my heart.</p>
+
+<p>This is the first time I have written about that night. But I am a firm believer that God works everything out for His Glory. I want to share with others that may be struggling with the same things; I want to help them or maybe give them a different lens like I was given.</p>
+
+<p>I pray this blesses someone. I pray that this keeps someone from doing what I did and trying to maintain control of something that never belonged to me in the first place. God wants the best for us. When we try to control our own fate, we end up in His way. If we just surrender to Him and start working on our relationship with Him, He will show us the way.</p>
+
+<p>Start thinking about God in terms of the TV dad. You know who I mean. The one that you can crawl up on his lap or in his arms, and he listens to your problems, cares about your worries, and rejoices in your wins. God is the good, good father that will give you comfort when you get in His arms and just let it all go.</p>
+
+<p>I love every single one of you reading this. More importantly, God loves every single one of you reading this. And He wants everyone to know that you are not unredeemable. Your situation is not unredeemable.</p>
+
+<p>God is a redeemer. And God is the best forgiver, removing transgressions and throwing them into the sea. He separates us from our sin as far as the east is from the west. There’s no other god like Him.</p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Jesus" /><category term="God" /><category term="Holy Spirit" /><category term="Christianity" /><summary type="html"><![CDATA[A personal story]]></summary></entry><entry><title type="html">Stars We Lost in 2019</title><link href="http://localhost:4000/blog/stars-we-lost-in-2019" rel="alternate" type="text/html" title="Stars We Lost in 2019" /><published>2019-12-23T00:00:00-05:00</published><updated>2019-12-23T00:00:00-05:00</updated><id>http://localhost:4000/blog/stars-we-lost-in-2019</id><content type="html" xml:base="http://localhost:4000/blog/stars-we-lost-in-2019"><![CDATA[<p><img src="/assets/img/year-in-review-2019.png" alt="Year in review" /></p>
+
+<p>I read an article today on Fox News entitled “Stars We Lost in 2019”. It listed 157 celebrities that died in 2019. Some were household names like Robert Forster who played Bud Baxter on Last Man Standing. Another was legendary wrestling announcer “Mean” Gene Okerlund who died at the age of 76. Okerlund was one of the most recognizable names in sports entertainment, with his career spanning the American Wrestling Association, World Championship Wrestling, and World Wrestling Entertainment.</p>
+
+<p>Many were young, outside of the range of what we as humans think is a “normal” age range to die. When someone dies over the age of 60 or 70, it doesn’t shock us nearly as much as when someone dies as a child or in their 30s or 40s. When someone dies that we see as “too young to go that early”, there’s a different kind of sad. We think about their parents and siblings or even their children that must move on with life while pushing past this tragedy.</p>
+
+<p>I listed ten of the “young ones” below that stood out to me. Some are models, actors/actresses, rappers, reality stars, adult film stars, and even transgender.</p>
+
+<p><strong>Jack Burns, a young Scottish actor, and dancer died at 14 years old.</strong></p>
+
+<p><strong>Rising rap star Juice WRLD died after suffering a medical emergency at Chicago’s Midway Airport at age 21.</strong></p>
+
+<p><strong>Laurel Griggs, a Broadway actress who appeared in several movies and TV shows died at age 13.</strong></p>
+
+<p><strong>Adult film actress Jessica Jaymes died at age 40. Her real name is Jessica Michael Redding.</strong></p>
+
+<p><strong>Kylie Rae Harris died at age 30 after a three-vehicle crash in Taos, New Mexico. She was reportedly at fault for the crash, which also killed a 16-year-old girl.</strong></p>
+
+<p><strong>Miriam Rivera, the first openly transgender reality TV star, died on February 5 in Mexico at age 38.</strong></p>
+
+<p><strong>Disney actor Cameron Boyce died at age 20. The young performer, a native of Los Angeles, was known for his roles in the Disney franchise “Descendants” and the Disney Channel show “Jessie”.</strong></p>
+
+<p><strong>Former WWE Superstar Ashley Massaro died at age 39.</strong></p>
+
+<p><strong>Brazilian model Caroline Bittencourt died after trying to save her dogs from drowning at a Sao Paulo beach. She was 37.</strong></p>
+
+<p><strong>“Love Island” star Mike Thalassitis was found dead in his Essex home. He was 26.</strong></p>
+
+<p>Since I read this article, I haven’t been able to think about much else. We all know that death is part of each of our lives; there’s no denying it. But what I have spent most of my time thinking about is whether anyone told these people about Jesus. I know; it’s very easy to believe that there’s anyone living in America that’s never heard the name, Jesus.</p>
+
+<p>Some may have heard it in passing but have no clue of His grace.<br />
+Some may have heard of him being referred to as the Father and had a difficult time reconciling that because their relationship with their father on earth was or is troubled.<br />
+Some may have come from a family that taught Jesus but taught it through the lens of religion and not a relationship, so they walked away believing they could never keep up with all the dos and don’ts.
+We have absolutely no way of knowing anyone’s understanding of Jesus.</p>
+
+<p>It’s also very easy to believe that people get in their own world, their own bubble, and they don’t leave. They don’t seek out things beyond their circle.</p>
+
+<p>The actor or actress goes to work, works with other actors and actresses, directors, stage workers, people in administrative roles, and tons more. Celebrities all have a circle made up of people that are a lot like them, and they probably don’t associate with too many other people beyond their co-workers and neighbors.</p>
+
+<p>Don’t they? Isn’t that what we do?</p>
+
+<p>Then there’s the stereotype of the adult film star listed above. I have attended churches with people who would say things like, “well, she got paid to have sex. That makes her as bad as a prostitute, so she probably got what she deserved.” I mean, the “church folk” would believe she goes to work, has sex on camera for a paycheck, and then comes home to unwind with people who do the same thing.</p>
+
+<p>Doesn’t she? Isn’t that what we do?</p>
+
+<p>We’ve all thought it, right? We all profile and stereotype whether we purpose to or not. The real purpose must be to make a conscious decision to leave our own opinions out of how other people live their lives.</p>
+
+<p>Because, unless they have some desire to seek out the missing link in their life after going through the motions of celebrity life, where can they look? The reality is that most of the time, Christians don’t penetrate the circles of celebrities. The typical churchgoer doesn’t get invited to the set of a pornographic film to come to talk to them about Jesus. The judgment that rolls off most “Christians” in America is enough to make people who don’t believe in Jesus stay far away.</p>
+
+<p>Lately, my wife and I have been praying and thinking a lot about how to change our perspective from going to church like a “good” Christian should to being the church that Jesus commanded us to be in Matthew 29:19.</p>
+
+<p>Yes, the Bible in Hebrews 10:25 tells us not to neglect to assemble ourselves together as many do.
+And in Matthew 18:20, Jesus says, “if two or more are gathered in my name, there will I be also.”</p>
+
+<p>The problem is that the church isn’t the only place where Jesus is present. If you seek out a Sunday service because it’s a tradition, the church is doing nothing to spur you into the Christ-follower that we all need to be. If you seek out a Sunday service, do it with intention, for the purpose of meeting with Jesus while you are there. Do it because you want to exhort others to remain in the faith and finish well or to spend time in corporate worship where with like-minded believers you exalt God for being the good, good Father that He is.</p>
+
+<p>Going to church is sitting in a building with other Christians.
+Being the church means going to where the lost are, and maybe that’s the movie set where that adult film star works every day. It may mean going to the bar or the strip club, and it also may be in an innocent place like the grocery store or at the gas pump.</p>
+
+<p>The point is most people who don’t know Jesus aren’t going to show up in church one Sunday because they are curious. They likely won’t even show up if you invite them. But, when you do as Jesus did, and you go to where they are and bring the church to them, you do much more than invite them into a building. You build trust, and maybe, in time, a relationship.</p>
+
+<p>When Jesus began his ministry, he said, “hey, the 12 of you, let’s go together and tell people about the Kingdom.” Those 12 men didn’t realize it at the time, but Jesus was building a relationship with them first, gaining their trust. Jesus mentored them, showed them what it meant to truly bring God’s Kingdom to earth, led them by example, and then just before being crucified, told them to go do what he’d taught them.</p>
+
+<p>But, for some reason, we have ignored Jesus’s example and direction and decided that if we just go to church on Sunday, primarily out of habit and ritual, we’re doing okay.</p>
+
+<p>But that is religion and not a relationship.<br />
+That’s an obligation. Not sacrifice.</p>
+
+<p><em>Be like Jesus, and Merry Christmas</em></p>
+
+<p><strong>Scripture References</strong><br />
+<a href="https://www.blueletterbible.org/nasb/mat/28/10/t_corr_957019">Matthew 28:19</a><br />
+<a href="https://www.blueletterbible.org/nasb/heb/10/25/t_corr_1143025">Hebrews 10:25</a><br />
+<a href="https://www.blueletterbible.org/nasb/mat/18/20/t_corr_947020">Matthew 18:20</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Jesus" /><category term="God" /><category term="Holy Spirit" /><category term="Christianity" /><category term="Hollywood" /><category term="Stars" /><category term="Celebrities" /><category term="2019" /><summary type="html"><![CDATA[Year in review]]></summary></entry><entry><title type="html">Vesta Alert Notification System</title><link href="http://localhost:4000/blog/vesta-alert-notification-system" rel="alternate" type="text/html" title="Vesta Alert Notification System" /><published>2019-10-24T00:00:00-04:00</published><updated>2019-10-24T00:00:00-04:00</updated><id>http://localhost:4000/blog/vesta-alert-notification-system</id><content type="html" xml:base="http://localhost:4000/blog/vesta-alert-notification-system"><![CDATA[<p><img src="/assets/img/sc-arc-gis.jpg" alt="South Carolina ARC GIS" /></p>
+
+<p>I had the opportunity to present and share my thoughts on emergency communication and how GIS can play a role at the South Carolina ARC GIS conference.</p>
+
+<div id="adobe-dc-view" class="adobe-dc-view" style="height: 780px; width: 100%; border: 1px solid #dadada;"></div>
+<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
+
+<script>
+    document.addEventListener("adobe_dc_view_sdk.ready", function () {
+        var adobeDCView = new AdobeDC.View({ clientId: "b7ab5453a30e4e62a4e5f22d4e211149", divId: "adobe-dc-view" });
+        adobeDCView.previewFile(
+            {
+                content: { location: { url: "/assets/docs/2019-10-24-SCARC-Fall-Program.pdf" } },
+                metaData: { fileName: "2019-10-24-SCARC-Fall-Program.pdf" }
+            }, { defaultViewMode: "FIT_PAGE" });
+    });
+</script>
+
+<p><a href="https://michalferber.me/assets/docs/2019-10-24-SCARC-Fall-Program.pdf">https://michalferber.me/assets/docs/2019-10-24-SCARC-Fall-Program.pdf</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Emergency Notification" /><category term="Emergency Communications" /><summary type="html"><![CDATA[South Carolina ARC GIS conference]]></summary></entry><entry><title type="html">Enhancing healthcare with use of emergency notification technology</title><link href="http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology" rel="alternate" type="text/html" title="Enhancing healthcare with use of emergency notification technology" /><published>2018-05-09T00:00:00-04:00</published><updated>2018-05-09T00:00:00-04:00</updated><id>http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology</id><content type="html" xml:base="http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology"><![CDATA[<p><img src="/assets/img/mcleod-health-cancer-bldg.jpg" alt="McLeod Health" /></p>
+
+<div id="adobe-dc-view" class="adobe-dc-view" style="height: 780px; width: 100%; border: 1px solid #dadada;"></div>
+<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
+
+<script>
+    document.addEventListener("adobe_dc_view_sdk.ready", function () {
+        var adobeDCView = new AdobeDC.View({ clientId: "b7ab5453a30e4e62a4e5f22d4e211149", divId: "adobe-dc-view" });
+        adobeDCView.previewFile(
+            {
+                content: { location: { url: "/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf" } },
+                metaData: { fileName: "2018-05-09_McLeod_Health_Case_Study.pdf" }
+            }, { defaultViewMode: "FIT_PAGE" });
+    });
+</script>
+
+<p><a href="https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf">https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Emergency Notification" /><category term="Emergency Communications" /><summary type="html"><![CDATA[A case study on McLeod Health emergency notification]]></summary></entry></feed>

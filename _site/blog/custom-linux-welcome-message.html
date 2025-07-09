@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<!--
+  portfolYOU Jekyll theme by yousinix
+  Free for personal and commercial use under the MIT license
+  https://github.com/yousinix/portfolYOU
+-->
+
+<html lang="en" class="h-100">
+
+<head>
+
+  
+  
+  
+
+  
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Custom Linux Welcome Message Guide">
+  <meta property="og:description" content="This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.">
+  <meta property="og:image" content="assets/img/profile.png">
+
+  <title>Custom Linux Welcome Message Guide</title>
+  <meta name="description" content="This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.">
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+
+  <!-- Theme style -->
+  <script src="/assets/js/theme.js"></script>
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+
+  <!-- Animate CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+</head>
+
+
+<body class="h-100 d-flex flex-column">
+
+  <main class="flex-shrink-0 container mt-5">
+    <nav class="navbar navbar-expand-lg navbar-themed">
+
+  <a class="navbar-brand" href="/"><h5><b>Michal Ferber</b></h5></a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <i class="fas fa-1x fa-bars text-themed"></i>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto"><a class="nav-item nav-link " href="/about/">About</a>
+
+      <a class="nav-item nav-link active" href="/blog/">Blog</a>
+
+      <a class="nav-item nav-link " href="/downloads/">Downloads</a>
+
+      <a class="nav-item nav-link " href="/projects/">Projects</a>
+
+      
+
+      <span id="theme-toggler" class="nav-item nav-link" role="button" onclick="toggleTheme()"></span>
+    </div>
+  </div>
+
+</nav>
+    <div class="col-lg-10 mx-auto mt-5 markdown-body">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/custom.css">
+
+<h1><b>Custom Linux Welcome Message Guide</b></h1>
+
+<p class="post-metadata text-muted">
+    07 July 2025 -
+    <b>5 mins read time</b>
+
+            <br>Tags:
+            
+            <a class="text-decoration-none no-underline"
+                href="/blog/tags#linux">
+                <span class="tag badge badge-pill text-primary border border-primary">Linux</span>
+            </a>
+            
+            <a class="text-decoration-none no-underline"
+                href="/blog/tags#how-to">
+                <span class="tag badge badge-pill text-primary border border-primary">How To</span>
+            </a>
+            </p>
+
+<p><a href="https://github.com/fastfetch-cli/fastfetch"><img src="/assets/img/fastfetch.png" alt="fastfetch-cli" /></a></p>
+
+<p>This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.</p>
+
+<p>You’ll get:</p>
+
+<ul>
+  <li>A full <code class="language-plaintext highlighter-rouge">fastfetch</code> system overview</li>
+  <li>Colored greeting</li>
+  <li>Uptime and load average</li>
+  <li>Public IP</li>
+  <li>Disk usage</li>
+  <li>Update check</li>
+  <li>Raspberry Pi temperature and throttle status (if applicable)</li>
+  <li>Weather for your location</li>
+  <li>A custom message (“Whiskey, Tango, Foxtrot!”)</li>
+</ul>
+
+<hr />
+
+<h2 id="-step-1-create-the-welcome-script">✅ Step 1: Create the Welcome Script</h2>
+
+<p>Create a new script in your home directory:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano ~/welcome.sh
+</code></pre></div></div>
+
+<p>Paste the following code into the file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+clear
+fastfetch
+
+<span class="nv">CYAN</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;36m"</span>
+<span class="nv">YELLOW</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;33m"</span>
+<span class="nv">GREEN</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;32m"</span>
+<span class="nv">RED</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[1;31m"</span>
+<span class="nv">NC</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33[0m"</span> <span class="c"># No Color</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">Hello, </span><span class="nv">$USER</span><span class="s2">!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">Uptime: </span><span class="si">$(</span><span class="nb">uptime</span> <span class="nt">-p</span><span class="si">)</span><span class="s2"> | Load Average: </span><span class="si">$(</span><span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">' '</span> <span class="nt">-f1-3</span> /proc/loadavg<span class="si">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nv">PUBIP</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> ifconfig.me<span class="si">)</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">Public IP: </span><span class="nv">$PUBIP</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">Disk Usage on /:</span><span class="si">$(</span><span class="nb">df</span> <span class="nt">-h</span> / | <span class="nb">awk</span> <span class="s1">'NR==2 {print \" \" \$3 \" used of \" \$2 \" (\" \$5 \")\"}'</span><span class="si">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="k">if </span><span class="nb">command</span> <span class="nt">-v</span> apt <span class="o">&gt;</span>/dev/null 2&gt;&amp;1<span class="p">;</span> <span class="k">then
+    </span><span class="nv">UPDATES</span><span class="o">=</span><span class="si">$(</span>apt list <span class="nt">--upgradeable</span> 2&gt;/dev/null | <span class="nb">grep</span> <span class="nt">-v</span> <span class="s2">"Listing..."</span> | <span class="nb">wc</span> <span class="nt">-l</span><span class="si">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$UPDATES</span><span class="s2">"</span> <span class="nt">-gt</span> 0 <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">Updates available: </span><span class="nv">$UPDATES</span><span class="s2"> package(s)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">else
+        </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">Your system is up to date.</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">fi
+fi
+
+if</span> <span class="o">[</span> <span class="nt">-f</span> /var/run/reboot-required <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">⚠️  Reboot required!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="k">fi
+
+if </span><span class="nb">command</span> <span class="nt">-v</span> vcgencmd &amp;&gt;/dev/null<span class="p">;</span> <span class="k">then
+    </span><span class="nv">TEMP</span><span class="o">=</span><span class="si">$(</span>vcgencmd measure_temp | <span class="nb">cut</span> <span class="nt">-d</span><span class="o">=</span> <span class="nt">-f2</span><span class="si">)</span>
+    <span class="nv">THROTTLED_RAW</span><span class="o">=</span><span class="si">$(</span>vcgencmd get_throttled | <span class="nb">cut</span> <span class="nt">-d</span><span class="o">=</span> <span class="nt">-f2</span><span class="si">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$THROTTLED_RAW</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"0x0"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nv">THROTTLE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">RED</span><span class="k">}</span><span class="s2">Yes (</span><span class="nv">$THROTTLED_RAW</span><span class="s2">)</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">else
+        </span><span class="nv">THROTTLE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GREEN</span><span class="k">}</span><span class="s2">No</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+    <span class="k">fi
+    </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">CYAN</span><span class="k">}</span><span class="s2">CPU Temp: </span><span class="nv">$TEMP</span><span class="s2"> | Throttled: </span><span class="nv">$THROTTLE_STATUS</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+<span class="k">fi
+
+</span><span class="nv">WEATHER</span><span class="o">=</span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s1">'wttr.in/Lake+City?format=3'</span><span class="si">)</span>
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">Weather: </span><span class="nv">$WEATHER</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">YELLOW</span><span class="k">}</span><span class="s2">You are good to go for Whiskey, Tango, Foxtrot!</span><span class="k">${</span><span class="nv">NC</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>Save and exit the file (<code class="language-plaintext highlighter-rouge">Ctrl+O</code>, <code class="language-plaintext highlighter-rouge">Enter</code>, then <code class="language-plaintext highlighter-rouge">Ctrl+X</code>).
+Make it executable:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x ~/welcome.sh
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="️-step-2-run-script-on-terminal-login">⚙️ Step 2: Run Script on Terminal Login</h2>
+
+<p>Add it to your shell’s startup config.</p>
+
+<h3 id="-for-zsh-default-on-kali-macos">🔹 For Zsh (default on Kali, macOS)</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'\nif [ -x "$HOME/welcome.sh" ]; then\n "$HOME/welcome.sh"\nfi'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+</code></pre></div></div>
+
+<h3 id="-for-bash">🔹 For Bash</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'\nif [ -x "$HOME/welcome.sh" ]; then\n    "$HOME/welcome.sh"\nfi'</span> <span class="o">&gt;&gt;</span> ~/.bashrc
+</code></pre></div></div>
+
+<p>Then apply the changes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.zshrc   <span class="c"># or ~/.bashrc depending on your shell</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-optional-system-wide-setup-for-all-users">🌍 Optional: System-Wide Setup (for All Users)</h2>
+
+<p>To show the welcome message for every user on the system, copy the script to <code class="language-plaintext highlighter-rouge">/etc/profile.d/</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp</span> ~/welcome.sh /etc/profile.d/welcome.sh 
+<span class="nb">sudo chmod</span> +x /etc/profile.d/welcome.sh
+</code></pre></div></div>
+
+<p>It will run for any interactive login shell across all users.</p>
+
+<hr />
+
+<h2 id="-step-3-install-required-packages">🔌 Step 3: Install Required Packages</h2>
+
+<p>Install the needed tools:</p>
+
+<h3 id="debianubuntukali">Debian/Ubuntu/Kali</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt update <span class="nb">sudo </span>apt <span class="nb">install </span>fastfetch curl libraspberrypi-bin
+</code></pre></div></div>
+
+<h3 id="fedora">Fedora</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>dnf <span class="nb">install </span>fastfetch curl libraspberrypi-tools
+</code></pre></div></div>
+
+<h3 id="arch">Arch</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>pacman <span class="nt">-Sy</span> fastfetch curl raspberrypi-firmware
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="-step-4-test-it">🧪 Step 4: Test It</h2>
+
+<p>Simply run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/welcome.sh
+</code></pre></div></div>
+
+<p>Or open a new terminal or SSH session to see the welcome message in action.</p>
+
+<hr />
+
+<h2 id="-notes">🧠 Notes</h2>
+
+<ul>
+  <li>
+    <p>The update check and reboot prompt only work on Debian-based systems.</p>
+  </li>
+  <li>
+    <p>Raspberry Pi-specific temp/throttle requires <code class="language-plaintext highlighter-rouge">vcgencmd</code> (from <code class="language-plaintext highlighter-rouge">libraspberrypi-bin</code>).</p>
+  </li>
+  <li>
+    <p>Change the weather location in the script (<code class="language-plaintext highlighter-rouge">Lake+City</code>) to match your area or use IP-based geolocation.</p>
+  </li>
+  <li>
+    <p>You can customize the colors, messages, or add even more functionality (like Docker container status, CPU graph, etc.).</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="-result-example">🎉 Result Example</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello, michal!
+Uptime: up 3 hours, 2 minutes | Load Average: 0.15 0.10 0.08
+Public IP: 75.176.xxx.xxx
+Disk Usage on /: 13G used of 58G <span class="o">(</span>22%<span class="o">)</span>
+Updates available: 3 package<span class="o">(</span>s<span class="o">)</span>
+CPU Temp: 43.8°C | Throttled: No
+Weather: Lake City: 🌤 +91°F
+You are good to go <span class="k">for </span>Whiskey, Tango, Foxtrot!
+</code></pre></div></div>
+
+<p><img src="/assets/img/welcome-message.png" alt="Screenshot" /></p>
+
+<hr />
+
+<p>Enjoy your custom login experience, Commander. 🛫</p>
+
+
+
+<div class="pt-5">
+    
+</div>
+
+
+<script src="/assets/js/copyCode.js"></script>
+
+</div>
+  </main>
+  <footer class="mt-auto py-3 text-center">
+
+  <small class="text-muted mb-2">
+    <i class="fas fa-code"></i> with <i class="fas fa-heart"></i>
+    by <strong>Michal Ferber</strong>
+  </small>
+
+  <div class="container-fluid justify-content-center"><a class="social mx-1"  href="mailto:michal@michalferber.me"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#db4437'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fas fa-envelope fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.github.com/MichalAFerber"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#FFFFFF'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-github fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.twitter.com/MichalAFerber"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#1DA1F2'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-twitter fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.youtube.com/MichalAFerber"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#ff0000'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-youtube fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.keybase.io/MichalAFerber"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#FF6F21'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-keybase fa-1x"></i>
+    </a><a class="social mx-1"  href="https://t.me/MichalAFerber"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#0088cc'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-telegram fa-1x"></i>
+    </a>
+
+</div><small id="attribution">
+    theme <a href="https://github.com/yousinix/portfolYOU">portfolYOU</a>
+  </small>
+
+</footer>
+
+  
+  <!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- wow.js CDN & Activation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+<script> new WOW().init(); </script>
+
+<!-- Initialize all tooltips -->
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="TechGuyWithABeard" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FFDD00" data-position="Right" data-x_margin="16" data-y_margin="16"></script></body>
+
+</html>

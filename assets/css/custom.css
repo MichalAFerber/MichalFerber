@@ -1,11 +1,15 @@
+/* Icon Styles */
 img.icon {
   height: 32px;
   width: 32px;
 }
+
+/* Badges Container */
 .badges-container {
   max-width: 1000px; /* Adjust as needed */
   margin: 0 auto;
 }
+
 .badges-container .carousel-item img {
   max-width: 50%;
   margin: 0 auto;
@@ -13,9 +17,91 @@ img.icon {
   display: block;
   object-fit: contain;
 }
+
+/* Certifications Container */
 .certifications-container .carousel-item img {
   margin: 0 auto;
   padding: 40px;
   display: block;
   object-fit: contain;
+}
+
+/* Code Block Styles */
+pre.highlight {
+  background-color: #2D2D2D; /* Slightly lighter dark gray for code blocks */
+  border-left: 5px solid #C51A4A; /* Magenta border for visual pop */
+  color: #D4D4D4; /* Off-white code text, Prettier-inspired */
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 14px;
+  padding: 12px 16px;
+  position: relative; /* For positioning the copy button */
+  overflow-x: auto; /* Horizontal scrollbar only if needed */
+  white-space: pre-wrap; /* Wrap text to fit container */
+  word-wrap: break-word; /* Ensure long words break */
+  border-radius: 3px; /* Subtle rounding */
+  margin: 0.5em 0;
+  min-width: 400px; /* Prevent over-wrapping on larger screens */
+}
+
+/* Code element inside pre */
+pre.highlight code {
+  background-color: transparent; /* Match pre background */
+  border: 0;
+  padding: 0;
+  display: block;
+}
+
+/* Copy to Clipboard Button */
+.copy {
+  color: #A5D6A7; /* Green to match Prettier strings */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.3s ease;
+}
+
+/* Show button on hover, focus, or active */
+pre.highlight:hover .copy,
+pre.highlight .copy:focus,
+pre.highlight .copy:active {
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  opacity: 1;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+/* Syntax Highlighting (Prettier-inspired, for Rouge or similar) */
+pre.highlight .k { /* Keywords */
+  color: #C792EA; /* Bright purple */
+}
+pre.highlight .s { /* Strings */
+  color: #A5D6A7; /* Green */
+}
+pre.highlight .c { /* Comments */
+  color: #6A737D; /* Muted gray */
+}
+pre.highlight .n { /* Numbers */
+  color: #F78C6C; /* Orange */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  pre.highlight {
+    font-size: 12px;
+    padding: 10px;
+    white-space: pre; /* Revert to no wrapping on mobile */
+    word-wrap: normal; /* Prevent word breaking */
+    min-width: auto; /* Remove min-width for mobile */
+  }
+  .copy {
+    font-size: 10px;
+    right: 0.5rem;
+    top: 0.5rem;
+  }
 }
