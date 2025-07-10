@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "How to Remove and Exclude .DS_Store Files on macOS with Git",
+      "category" : "",
+      "tags"     : "Git, macOS, How To, Programming",
+      "url"      : "/blog/remove-and-exclude-ds_store-files-on-macos-with-git",
+      "date"     : "2025-07-10 00:00:00 -0400"
+    } ,
+  
+    {
       "title"    : "Configure mDNS for Hostname Resolution on Ubuntu",
       "category" : "",
       "tags"     : "Linux, How To, DNS",
@@ -78,6 +86,14 @@
       "tags"     : "Microsoft Certification, Azure",
       "url"      : "/blog/microsoft-certified-azure-fundamentals",
       "date"     : "2021-06-07 00:00:00 -0400"
+    } ,
+  
+    {
+      "title"    : "30-day Microsoft Cloud Skills Challenge",
+      "category" : "",
+      "tags"     : "Microsoft, Azure, AZ-104",
+      "url"      : "/blog/microsoft-cloud-skills-challenge",
+      "date"     : "2020-12-31 00:00:00 -0500"
     } ,
   
     {
