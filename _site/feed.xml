@@ -1,4 +1,142 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-07-08T22:32:05-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Michal Ferber</title><subtitle>I turn coffee &lt;img class=&quot;icon&quot; src=&quot;/assets/img/coffee.jpg&quot; alt=&quot;Coffee&quot;&gt; and Mountain Dew &lt;img class=&quot;icon&quot; src=&quot;/assets/img/mountain-dew.jpg&quot; alt=&quot;Mountain Dew&quot;&gt; into code, use tabs over spaces and never brake production.</subtitle><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><entry><title type="html">Custom Linux Welcome Message Guide</title><link href="http://localhost:4000/blog/custom-linux-welcome-message" rel="alternate" type="text/html" title="Custom Linux Welcome Message Guide" /><published>2025-07-07T00:00:00-04:00</published><updated>2025-07-07T00:00:00-04:00</updated><id>http://localhost:4000/blog/custom-linux-welcome-message</id><content type="html" xml:base="http://localhost:4000/blog/custom-linux-welcome-message"><![CDATA[<p><a href="https://github.com/fastfetch-cli/fastfetch"><img src="/assets/img/fastfetch.png" alt="fastfetch-cli" /></a></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-07-10T02:20:00-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Michal Ferber</title><subtitle>I turn coffee &lt;img class=&quot;icon&quot; src=&quot;/assets/img/coffee.jpg&quot; alt=&quot;Coffee&quot;&gt; and Mountain Dew &lt;img class=&quot;icon&quot; src=&quot;/assets/img/mountain-dew.jpg&quot; alt=&quot;Mountain Dew&quot;&gt; into code, use tabs over spaces and never brake production.</subtitle><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><entry><title type="html">Configure mDNS for Hostname Resolution on Ubuntu</title><link href="http://localhost:4000/blog/configure-dns-for-hostname-on-ubuntu" rel="alternate" type="text/html" title="Configure mDNS for Hostname Resolution on Ubuntu" /><published>2025-07-09T00:00:00-04:00</published><updated>2025-07-09T00:00:00-04:00</updated><id>http://localhost:4000/blog/configure-dns-for-hostname-on-ubuntu</id><content type="html" xml:base="http://localhost:4000/blog/configure-dns-for-hostname-on-ubuntu"><![CDATA[<p><img src="/assets/img/systemctl_status_avahi-daemon.png" alt="avahi-daemon" /></p>
+
+<p>Enable your Ubuntu servers to be accessed via <code class="language-plaintext highlighter-rouge">hostname.local</code> (e.g., <code class="language-plaintext highlighter-rouge">ping yourservername.local</code> or <code class="language-plaintext highlighter-rouge">ssh username@yourservername.local</code>) using Avahi for Zero Configuration Networking (Zeroconf). This is perfect for local networks, like my setup with pi5server, pi4server, and pi3server.</p>
+
+<h2 id="install-avahi">Install Avahi</h2>
+
+<p>Install the mDNS daemon and tools:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt update
+<span class="nb">sudo </span>apt <span class="nb">install </span>avahi-daemon avahi-utils libnss-mdns
+</code></pre></div></div>
+
+<ul>
+  <li><strong>avahi-daemon</strong>: Handles mDNS and service discovery.</li>
+  <li><strong>avahi-utils</strong>: Provides tools like avahi-browse.</li>
+  <li><strong>libnss-mdns</strong>: Enables .local resolution in the system.</li>
+</ul>
+
+<h2 id="verify-avahi-service">Verify Avahi Service</h2>
+
+<p>Ensure Avahi is running:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl <span class="nb">enable </span>avahi-daemon
+<span class="nb">sudo </span>systemctl start avahi-daemon
+<span class="nb">sudo </span>systemctl status avahi-daemon
+</code></pre></div></div>
+
+<p>Look for <code class="language-plaintext highlighter-rouge">active (running)</code> in the output.</p>
+
+<h2 id="configure-hostname">Configure Hostname</h2>
+
+<p>Set a unique hostname for each server:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>hostnamectl set-hostname yourservername  <span class="c"># Replace with your hostname</span>
+</code></pre></div></div>
+
+<p>Update /etc/hosts to include the hostname:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nano /etc/hosts
+</code></pre></div></div>
+
+<p>Add or verify:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1 localhost
+127.0.1.1 yourservername  <span class="c"># Replace with your hostname</span>
+</code></pre></div></div>
+
+<p>Save and exit (<code class="language-plaintext highlighter-rouge">Ctrl+O</code>, <code class="language-plaintext highlighter-rouge">Enter</code>, <code class="language-plaintext highlighter-rouge">Ctrl+X</code>).</p>
+
+<h2 id="advertise-ssh-service">Advertise SSH Service</h2>
+
+<p>Allow SSH discovery via mDNS:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nano /etc/avahi/services/ssh.service
+</code></pre></div></div>
+
+<p>Add:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">standalone</span><span class="o">=</span><span class="s1">'no'</span>?&gt;
+&lt;<span class="o">!</span>DOCTYPE service-group SYSTEM <span class="s2">"avahi-service.dtd"</span><span class="o">&gt;</span>
+&lt;service-group&gt;
+    &lt;name replace-wildcards<span class="o">=</span><span class="s2">"yes"</span><span class="o">&gt;</span>%h&lt;/name&gt;
+    &lt;service&gt;
+        &lt;<span class="nb">type</span><span class="o">&gt;</span>_ssh._tcp&lt;/type&gt;
+        &lt;port&gt;22&lt;/port&gt;
+    &lt;/service&gt;
+&lt;/service-group&gt;
+</code></pre></div></div>
+
+<p>Restart Avahi:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl restart avahi-daemon
+</code></pre></div></div>
+
+<h2 id="configure-client-for-mdns">Configure Client for mDNS</h2>
+
+<p>On the client device accessing the server:</p>
+
+<ul>
+  <li><strong>Linux (Ubuntu, etc.)</strong>: Install <code class="language-plaintext highlighter-rouge">libnss-mdns</code>:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>libnss-mdns
+</code></pre></div></div>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/nsswitch.conf</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nano /etc/nsswitch.conf
+</code></pre></div></div>
+
+<p>Ensure the <code class="language-plaintext highlighter-rouge">hosts</code> line includes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hosts: files mdns4_minimal <span class="o">[</span><span class="nv">NOTFOUND</span><span class="o">=</span><span class="k">return</span><span class="o">]</span> resolve <span class="o">[!</span><span class="nv">UNAVAIL</span><span class="o">=</span><span class="k">return</span><span class="o">]</span> dns
+</code></pre></div></div>
+
+<ul>
+  <li><strong>macOS</strong>: Built-in Bonjour support, no action needed.</li>
+  <li><strong>Windows</strong>: Install Bonjour (via iTunes or standalone) or use an mDNS-capable SSH client like Termius.</li>
+  <li><strong>iOS/Android</strong>: Use an mDNS-capable SSH app like Termius.</li>
+</ul>
+
+<h2 id="test-mdns-resolution">Test mDNS Resolution</h2>
+
+<p>From a client on the same network (e.g., <code class="language-plaintext highlighter-rouge">192.168.x.x</code>):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ping yourservername.local
+ssh &lt;username@yourservername.local&gt;
+</code></pre></div></div>
+
+<p>Verify services:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>avahi-browse <span class="nt">-a</span>
+</code></pre></div></div>
+
+<p>Look for entries like:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ eth0 IPv4 pi5server <span class="o">[</span><span class="nb">hostname</span><span class="o">]</span> _ssh._tcp <span class="nb">local</span>
+</code></pre></div></div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<ul>
+  <li><strong>Same Subnet</strong>: Ensure client and server are on the same network (e.g., <code class="language-plaintext highlighter-rouge">192.168.x.x</code>).</li>
+  <li><strong>Firewall</strong>: Allow mDNS traffic:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw allow 5353/udp
+</code></pre></div></div>
+
+<ul>
+  <li><strong>Resolution Fails</strong>: Check Avahi logs:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>journalctl <span class="nt">-u</span> avahi-daemon
+</code></pre></div></div>
+
+<h2 id="-notes">🧠 Notes</h2>
+
+<p>Ensure SSH is enabled (<code class="language-plaintext highlighter-rouge">sudo systemctl enable ssh</code>; <code class="language-plaintext highlighter-rouge">sudo systemctl start ssh</code>).</p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Linux" /><category term="How To" /><category term="DNS" /><summary type="html"><![CDATA[Configure Ubuntu for mDNS to ping/SSH using hostname.local (e.g., yourservername.local). Install Avahi, set hostname, and enable SSH discovery.]]></summary></entry><entry><title type="html">Custom Linux Welcome Message Guide</title><link href="http://localhost:4000/blog/custom-linux-welcome-message" rel="alternate" type="text/html" title="Custom Linux Welcome Message Guide" /><published>2025-07-07T00:00:00-04:00</published><updated>2025-07-07T00:00:00-04:00</updated><id>http://localhost:4000/blog/custom-linux-welcome-message</id><content type="html" xml:base="http://localhost:4000/blog/custom-linux-welcome-message"><![CDATA[<p><a href="https://github.com/fastfetch-cli/fastfetch"><img src="/assets/img/fastfetch.png" alt="fastfetch-cli" /></a></p>
 
 <p>This guide walks you through setting up a personalized welcome message that appears when you log into your terminal or connect via SSH.</p>
 
@@ -413,7 +551,11 @@ Unknown</p>
 
 <p>As a tech enthusiast, I couldn’t resist diving into the collaboration between Proton and Standard Notes. Having tried almost every other note-taking app, including Joplin, I appreciate the simplicity and elegance of a clean text editor, especially when it supports Markdown.</p>
 
-<p>After downloading and installing Standard Notes on my Mac, I stumbled upon Listed—a free tool integrated with Standard Notes. Naturally, I had to give it a shot. And so, here I am.<script src="https://gist.github.com/3c466bc3c32c4ae5c9b36d1266b913d8.js"> </script></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Programming" /><category term="Code" /><summary type="html"><![CDATA[Everyone has to have one of these right?]]></summary></entry><entry><title type="html">The new Admin On-Demand feature in the Mosyle MDM</title><link href="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm" rel="alternate" type="text/html" title="The new Admin On-Demand feature in the Mosyle MDM" /><published>2022-10-26T00:00:00-04:00</published><updated>2022-10-26T00:00:00-04:00</updated><id>http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm</id><content type="html" xml:base="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm"><![CDATA[<p><img src="/assets/img/mosyle-admin-on-demand.png" alt="Mosyle Certified Administrator" /></p>
+<p>After downloading and installing Standard Notes on my Mac, I stumbled upon Listed—a free tool integrated with Standard Notes. Naturally, I had to give it a shot. And so, here I am.<script src="https://gist.github.com/3c466bc3c32c4ae5c9b36d1266b913d8.js"> </script></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Programming" /><category term="Code" /><summary type="html"><![CDATA[Everyone has to have one of these right?]]></summary></entry><entry><title type="html">Microsoft 365 Certified: Teams Administrator Associate</title><link href="http://localhost:4000/blog/microsoft-365-certified-teams-administrator-associate" rel="alternate" type="text/html" title="Microsoft 365 Certified: Teams Administrator Associate" /><published>2023-03-22T00:00:00-04:00</published><updated>2023-03-22T00:00:00-04:00</updated><id>http://localhost:4000/blog/microsoft-365-certified-teams-administrator-associate</id><content type="html" xml:base="http://localhost:4000/blog/microsoft-365-certified-teams-administrator-associate"><![CDATA[<p><img class="d-block w-25" src="/assets/badges/microsoft-365-teams-administrator-associate.png" /></p>
+
+<p><img src="/assets/certs/Microsoft_Certified_Professional_Certificate_4-pdf.jpg" alt="Microsoft 365 Certified: Teams Administrator Associate" /></p>
+
+<p><a href="https://learn.microsoft.com/en-us/credentials/certifications/m365-teams-administrator-associate/">Microsoft Learn - Microsoft 365 Certified: Teams Administrator Associate</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Microsoft Certification" /><category term="Teams" /><summary type="html"><![CDATA[MS-700: Managing Microsoft Teams.]]></summary></entry><entry><title type="html">The new Admin On-Demand feature in the Mosyle MDM</title><link href="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm" rel="alternate" type="text/html" title="The new Admin On-Demand feature in the Mosyle MDM" /><published>2022-10-26T00:00:00-04:00</published><updated>2022-10-26T00:00:00-04:00</updated><id>http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm</id><content type="html" xml:base="http://localhost:4000/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm"><![CDATA[<p><img src="/assets/img/mosyle-admin-on-demand.png" alt="Mosyle Certified Administrator" /></p>
 
 <p>A new feature in the Mosyle MDM is the ability to allow users to have admin permission only when they need it. In the past, you had to use a static password that the user knew or rotate the password and then give the password when the user asks for it.</p>
 
@@ -425,141 +567,12 @@ Unknown</p>
 
 <div class="video">
   <iframe src="https://www.youtube.com/embed/bkIj3i2TUqI" frameborder="0" allowfullscreen=""></iframe>
-</div>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="How To" /><category term="MDM" /><category term="Mosyle" /><summary type="html"><![CDATA[A How To Guide.]]></summary></entry><entry><title type="html">September 2 – Part 1</title><link href="http://localhost:4000/blog/september-23-part-1" rel="alternate" type="text/html" title="September 2 – Part 1" /><published>2019-12-26T00:00:00-05:00</published><updated>2019-12-26T00:00:00-05:00</updated><id>http://localhost:4000/blog/september-23-part-1</id><content type="html" xml:base="http://localhost:4000/blog/september-23-part-1"><![CDATA[<p><img src="/assets/img/road-path.jpg" alt="Road Path" /></p>
+</div>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="How To" /><category term="MDM" /><category term="Mosyle" /><summary type="html"><![CDATA[A How To Guide.]]></summary></entry><entry><title type="html">Mosyle Certified Admin</title><link href="http://localhost:4000/blog/mosyle-certified-admin" rel="alternate" type="text/html" title="Mosyle Certified Admin" /><published>2021-09-26T00:00:00-04:00</published><updated>2021-09-26T00:00:00-04:00</updated><id>http://localhost:4000/blog/mosyle-certified-admin</id><content type="html" xml:base="http://localhost:4000/blog/mosyle-certified-admin"><![CDATA[<p><img class="d-block w-50" src="/assets/badges/mosyle.png" /></p>
 
-<p>My personal life has taken a lot of twists and turns. And as much as I have tried to control everything and be perfect in everything, I have found out the hard way that just isn’t how life works. I have also found that it’s the exact opposite of following Jesus. To follow Him, we have to lean on Him and seek His will. It has taken me 41 years to get where I am today.</p>
+<p><img src="/assets/certs/2021-09-26_Mosyle_certificate_628-A4F.jpg" alt="Mosyle Certified Admin" /></p>
 
-<p>And trust me, I took a long way around.</p>
+<p><a href="https://business.mosyle.com/">Mosyle Business - MDM</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="MDM" /><category term="Mobile Device Manager" /><category term="Endpoint Management" /><category term="Apple" /><category term="iOS" /><category term="macOS" /><summary type="html"><![CDATA[This certificate deems the recipient competent and skilled in Mosyle Business MDM. He has completed certification and become a Mosyle Certified Admin.]]></summary></entry><entry><title type="html">Microsoft Certified: Azure Fundamentals</title><link href="http://localhost:4000/blog/microsoft-certified-azure-fundamentals" rel="alternate" type="text/html" title="Microsoft Certified: Azure Fundamentals" /><published>2021-06-07T00:00:00-04:00</published><updated>2021-06-07T00:00:00-04:00</updated><id>http://localhost:4000/blog/microsoft-certified-azure-fundamentals</id><content type="html" xml:base="http://localhost:4000/blog/microsoft-certified-azure-fundamentals"><![CDATA[<p><img class="d-block w-25" src="/assets/badges/microsoft-azure-fundamentals.png" /></p>
 
-<p>I’m talking regularly to a counselor now. I love talking to him because he is packed with tons of Godly wisdom and gives me a different lens through which to view things. He has helped me see that because my relationship with my earthly father wasn’t the best, which has caused lots of unresolved feelings, I was letting that affect my relationship with my heavenly Father. It caused me not to view God as the good, good Father He really is.</p>
+<p><img src="/assets/certs/Microsoft_Certified_Professional_Certificate_1-pdf.jpg" alt="Microsoft Certified Azure Fundamentals" /></p>
 
-<p>My counselor and I have spent a lot of time working on how I see myself, and my identity. That’s important because that relates to my purpose. When you don’t have a solid identity, it’s easy to get tossed to and fro and let the world influence your decisions. You see, if I don’t know who I am in Christ, then I don’t know where I stand with Christ, which affects how I approach or don’t approach Jesus.</p>
-
-<p>Because my identity in Christ was skewed, I didn’t believe that I was able to really lean on God. My dad died when I was 21, and he wanted everything to be perfect, so growing up I lived in fear of disappointing him. That, in turn, has translated into me being afraid to disappoint God. I believed that if I didn’t go to God, or lean on him if I somehow subverted the Creator, then He wouldn’t know, and I wouldn’t disappoint Him.</p>
-
-<p>I am still working on my identity; I haven’t gotten that completely figured out yet. But I have found rest in knowing that finding my identity isn’t in one single thing. It isn’t a one-and-done type of test. It’s an ongoing discovery, just like working out your own salvation, just like the process of sanctification.</p>
-
-<p>What I have figured out with my identity is that I am a child of God. I love Him so much and am so thankful for His grace and mercy. And God is my favorite daddy. He is a good, good father and has been so good to me. He has kept me from so much harm and given me so much favor in my life.</p>
-
-<p>I was raised in the church, and I was at church every time the doors were open. For a period of three years, in my 2nd, 3rd, and 4th-grade years, I went to church six times a week. Even the Christian school I was attending was at my church. So, growing up in church, I knew all of this I’m telling you. I had heard it over and over. But it never made it two feet from my head to my heart.</p>
-
-<p>Then, on September 23, 2019, I had a life-changing experience and found myself at 41 years old and in handcuffs for the first time in my life. It was at that very moment that God started showing me grace as I have never experienced before in my life. Throughout the whole ordeal which lasted about eight days, everyone in my life showed me grace, the Jesus kind of grace. It was awesome and humbling. My pride was stripped away from me that night, and for the first time, I realized how vulnerable I was as a man and how out of my control life really was.</p>
-
-<p>For the first time in my life, the things I knew in my head, started making their way to my heart.</p>
-
-<p>This is the first time I have written about that night. But I am a firm believer that God works everything out for His Glory. I want to share with others that may be struggling with the same things; I want to help them or maybe give them a different lens like I was given.</p>
-
-<p>I pray this blesses someone. I pray that this keeps someone from doing what I did and trying to maintain control of something that never belonged to me in the first place. God wants the best for us. When we try to control our own fate, we end up in His way. If we just surrender to Him and start working on our relationship with Him, He will show us the way.</p>
-
-<p>Start thinking about God in terms of the TV dad. You know who I mean. The one that you can crawl up on his lap or in his arms, and he listens to your problems, cares about your worries, and rejoices in your wins. God is the good, good father that will give you comfort when you get in His arms and just let it all go.</p>
-
-<p>I love every single one of you reading this. More importantly, God loves every single one of you reading this. And He wants everyone to know that you are not unredeemable. Your situation is not unredeemable.</p>
-
-<p>God is a redeemer. And God is the best forgiver, removing transgressions and throwing them into the sea. He separates us from our sin as far as the east is from the west. There’s no other god like Him.</p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Jesus" /><category term="God" /><category term="Holy Spirit" /><category term="Christianity" /><summary type="html"><![CDATA[A personal story]]></summary></entry><entry><title type="html">Stars We Lost in 2019</title><link href="http://localhost:4000/blog/stars-we-lost-in-2019" rel="alternate" type="text/html" title="Stars We Lost in 2019" /><published>2019-12-23T00:00:00-05:00</published><updated>2019-12-23T00:00:00-05:00</updated><id>http://localhost:4000/blog/stars-we-lost-in-2019</id><content type="html" xml:base="http://localhost:4000/blog/stars-we-lost-in-2019"><![CDATA[<p><img src="/assets/img/year-in-review-2019.png" alt="Year in review" /></p>
-
-<p>I read an article today on Fox News entitled “Stars We Lost in 2019”. It listed 157 celebrities that died in 2019. Some were household names like Robert Forster who played Bud Baxter on Last Man Standing. Another was legendary wrestling announcer “Mean” Gene Okerlund who died at the age of 76. Okerlund was one of the most recognizable names in sports entertainment, with his career spanning the American Wrestling Association, World Championship Wrestling, and World Wrestling Entertainment.</p>
-
-<p>Many were young, outside of the range of what we as humans think is a “normal” age range to die. When someone dies over the age of 60 or 70, it doesn’t shock us nearly as much as when someone dies as a child or in their 30s or 40s. When someone dies that we see as “too young to go that early”, there’s a different kind of sad. We think about their parents and siblings or even their children that must move on with life while pushing past this tragedy.</p>
-
-<p>I listed ten of the “young ones” below that stood out to me. Some are models, actors/actresses, rappers, reality stars, adult film stars, and even transgender.</p>
-
-<p><strong>Jack Burns, a young Scottish actor, and dancer died at 14 years old.</strong></p>
-
-<p><strong>Rising rap star Juice WRLD died after suffering a medical emergency at Chicago’s Midway Airport at age 21.</strong></p>
-
-<p><strong>Laurel Griggs, a Broadway actress who appeared in several movies and TV shows died at age 13.</strong></p>
-
-<p><strong>Adult film actress Jessica Jaymes died at age 40. Her real name is Jessica Michael Redding.</strong></p>
-
-<p><strong>Kylie Rae Harris died at age 30 after a three-vehicle crash in Taos, New Mexico. She was reportedly at fault for the crash, which also killed a 16-year-old girl.</strong></p>
-
-<p><strong>Miriam Rivera, the first openly transgender reality TV star, died on February 5 in Mexico at age 38.</strong></p>
-
-<p><strong>Disney actor Cameron Boyce died at age 20. The young performer, a native of Los Angeles, was known for his roles in the Disney franchise “Descendants” and the Disney Channel show “Jessie”.</strong></p>
-
-<p><strong>Former WWE Superstar Ashley Massaro died at age 39.</strong></p>
-
-<p><strong>Brazilian model Caroline Bittencourt died after trying to save her dogs from drowning at a Sao Paulo beach. She was 37.</strong></p>
-
-<p><strong>“Love Island” star Mike Thalassitis was found dead in his Essex home. He was 26.</strong></p>
-
-<p>Since I read this article, I haven’t been able to think about much else. We all know that death is part of each of our lives; there’s no denying it. But what I have spent most of my time thinking about is whether anyone told these people about Jesus. I know; it’s very easy to believe that there’s anyone living in America that’s never heard the name, Jesus.</p>
-
-<p>Some may have heard it in passing but have no clue of His grace.<br />
-Some may have heard of him being referred to as the Father and had a difficult time reconciling that because their relationship with their father on earth was or is troubled.<br />
-Some may have come from a family that taught Jesus but taught it through the lens of religion and not a relationship, so they walked away believing they could never keep up with all the dos and don’ts.
-We have absolutely no way of knowing anyone’s understanding of Jesus.</p>
-
-<p>It’s also very easy to believe that people get in their own world, their own bubble, and they don’t leave. They don’t seek out things beyond their circle.</p>
-
-<p>The actor or actress goes to work, works with other actors and actresses, directors, stage workers, people in administrative roles, and tons more. Celebrities all have a circle made up of people that are a lot like them, and they probably don’t associate with too many other people beyond their co-workers and neighbors.</p>
-
-<p>Don’t they? Isn’t that what we do?</p>
-
-<p>Then there’s the stereotype of the adult film star listed above. I have attended churches with people who would say things like, “well, she got paid to have sex. That makes her as bad as a prostitute, so she probably got what she deserved.” I mean, the “church folk” would believe she goes to work, has sex on camera for a paycheck, and then comes home to unwind with people who do the same thing.</p>
-
-<p>Doesn’t she? Isn’t that what we do?</p>
-
-<p>We’ve all thought it, right? We all profile and stereotype whether we purpose to or not. The real purpose must be to make a conscious decision to leave our own opinions out of how other people live their lives.</p>
-
-<p>Because, unless they have some desire to seek out the missing link in their life after going through the motions of celebrity life, where can they look? The reality is that most of the time, Christians don’t penetrate the circles of celebrities. The typical churchgoer doesn’t get invited to the set of a pornographic film to come to talk to them about Jesus. The judgment that rolls off most “Christians” in America is enough to make people who don’t believe in Jesus stay far away.</p>
-
-<p>Lately, my wife and I have been praying and thinking a lot about how to change our perspective from going to church like a “good” Christian should to being the church that Jesus commanded us to be in Matthew 29:19.</p>
-
-<p>Yes, the Bible in Hebrews 10:25 tells us not to neglect to assemble ourselves together as many do.
-And in Matthew 18:20, Jesus says, “if two or more are gathered in my name, there will I be also.”</p>
-
-<p>The problem is that the church isn’t the only place where Jesus is present. If you seek out a Sunday service because it’s a tradition, the church is doing nothing to spur you into the Christ-follower that we all need to be. If you seek out a Sunday service, do it with intention, for the purpose of meeting with Jesus while you are there. Do it because you want to exhort others to remain in the faith and finish well or to spend time in corporate worship where with like-minded believers you exalt God for being the good, good Father that He is.</p>
-
-<p>Going to church is sitting in a building with other Christians.
-Being the church means going to where the lost are, and maybe that’s the movie set where that adult film star works every day. It may mean going to the bar or the strip club, and it also may be in an innocent place like the grocery store or at the gas pump.</p>
-
-<p>The point is most people who don’t know Jesus aren’t going to show up in church one Sunday because they are curious. They likely won’t even show up if you invite them. But, when you do as Jesus did, and you go to where they are and bring the church to them, you do much more than invite them into a building. You build trust, and maybe, in time, a relationship.</p>
-
-<p>When Jesus began his ministry, he said, “hey, the 12 of you, let’s go together and tell people about the Kingdom.” Those 12 men didn’t realize it at the time, but Jesus was building a relationship with them first, gaining their trust. Jesus mentored them, showed them what it meant to truly bring God’s Kingdom to earth, led them by example, and then just before being crucified, told them to go do what he’d taught them.</p>
-
-<p>But, for some reason, we have ignored Jesus’s example and direction and decided that if we just go to church on Sunday, primarily out of habit and ritual, we’re doing okay.</p>
-
-<p>But that is religion and not a relationship.<br />
-That’s an obligation. Not sacrifice.</p>
-
-<p><em>Be like Jesus, and Merry Christmas</em></p>
-
-<p><strong>Scripture References</strong><br />
-<a href="https://www.blueletterbible.org/nasb/mat/28/10/t_corr_957019">Matthew 28:19</a><br />
-<a href="https://www.blueletterbible.org/nasb/heb/10/25/t_corr_1143025">Hebrews 10:25</a><br />
-<a href="https://www.blueletterbible.org/nasb/mat/18/20/t_corr_947020">Matthew 18:20</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Jesus" /><category term="God" /><category term="Holy Spirit" /><category term="Christianity" /><category term="Hollywood" /><category term="Stars" /><category term="Celebrities" /><category term="2019" /><summary type="html"><![CDATA[Year in review]]></summary></entry><entry><title type="html">Vesta Alert Notification System</title><link href="http://localhost:4000/blog/vesta-alert-notification-system" rel="alternate" type="text/html" title="Vesta Alert Notification System" /><published>2019-10-24T00:00:00-04:00</published><updated>2019-10-24T00:00:00-04:00</updated><id>http://localhost:4000/blog/vesta-alert-notification-system</id><content type="html" xml:base="http://localhost:4000/blog/vesta-alert-notification-system"><![CDATA[<p><img src="/assets/img/sc-arc-gis.jpg" alt="South Carolina ARC GIS" /></p>
-
-<p>I had the opportunity to present and share my thoughts on emergency communication and how GIS can play a role at the South Carolina ARC GIS conference.</p>
-
-<div id="adobe-dc-view" class="adobe-dc-view" style="height: 780px; width: 100%; border: 1px solid #dadada;"></div>
-<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
-
-<script>
-    document.addEventListener("adobe_dc_view_sdk.ready", function () {
-        var adobeDCView = new AdobeDC.View({ clientId: "b7ab5453a30e4e62a4e5f22d4e211149", divId: "adobe-dc-view" });
-        adobeDCView.previewFile(
-            {
-                content: { location: { url: "/assets/docs/2019-10-24-SCARC-Fall-Program.pdf" } },
-                metaData: { fileName: "2019-10-24-SCARC-Fall-Program.pdf" }
-            }, { defaultViewMode: "FIT_PAGE" });
-    });
-</script>
-
-<p><a href="https://michalferber.me/assets/docs/2019-10-24-SCARC-Fall-Program.pdf">https://michalferber.me/assets/docs/2019-10-24-SCARC-Fall-Program.pdf</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Emergency Notification" /><category term="Emergency Communications" /><summary type="html"><![CDATA[South Carolina ARC GIS conference]]></summary></entry><entry><title type="html">Enhancing healthcare with use of emergency notification technology</title><link href="http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology" rel="alternate" type="text/html" title="Enhancing healthcare with use of emergency notification technology" /><published>2018-05-09T00:00:00-04:00</published><updated>2018-05-09T00:00:00-04:00</updated><id>http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology</id><content type="html" xml:base="http://localhost:4000/blog/enhancing-healthcare-with-use-of-emergency-notification-technology"><![CDATA[<p><img src="/assets/img/mcleod-health-cancer-bldg.jpg" alt="McLeod Health" /></p>
-
-<div id="adobe-dc-view" class="adobe-dc-view" style="height: 780px; width: 100%; border: 1px solid #dadada;"></div>
-<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
-
-<script>
-    document.addEventListener("adobe_dc_view_sdk.ready", function () {
-        var adobeDCView = new AdobeDC.View({ clientId: "b7ab5453a30e4e62a4e5f22d4e211149", divId: "adobe-dc-view" });
-        adobeDCView.previewFile(
-            {
-                content: { location: { url: "/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf" } },
-                metaData: { fileName: "2018-05-09_McLeod_Health_Case_Study.pdf" }
-            }, { defaultViewMode: "FIT_PAGE" });
-    });
-</script>
-
-<p><a href="https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf">https://michalferber.me/assets/docs/2018-05-09_McLeod_Health_Case_Study.pdf</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Emergency Notification" /><category term="Emergency Communications" /><summary type="html"><![CDATA[A case study on McLeod Health emergency notification]]></summary></entry></feed>
+<p><a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/">Microsoft Certified: Azure Fundamentals</a></p>]]></content><author><name>Michal Ferber</name><email>michal@michalferber.me</email></author><category term="Microsoft Certification" /><category term="Azure" /><summary type="html"><![CDATA[AZ-900: Microsoft Azure Fundamentals.]]></summary></entry></feed>

@@ -38,7 +38,7 @@ Timeline
 /assets/badges/microsoft-365-teams-administrator-associate.png
 /assets/badges/mcse.png
 /assets/badges/mcp.png
-/assets/badges/milestone-certified-integration-technician-mcit.jpg
+/assets/badges/milestone-certified-integration-technician-mcit.png
 /assets/badges/mosyle.png
 {% endcapture %}
 {% include elements/carousel.html %}

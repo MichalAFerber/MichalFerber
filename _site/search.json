@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "Configure mDNS for Hostname Resolution on Ubuntu",
+      "category" : "",
+      "tags"     : "Linux, How To, DNS",
+      "url"      : "/blog/configure-dns-for-hostname-on-ubuntu",
+      "date"     : "2025-07-09 00:00:00 -0400"
+    } ,
+  
+    {
       "title"    : "Custom Linux Welcome Message Guide",
       "category" : "",
       "tags"     : "Linux, How To",
@@ -41,11 +49,43 @@
     } ,
   
     {
+      "title"    : "Microsoft 365 Certified: Teams Administrator Associate",
+      "category" : "",
+      "tags"     : "Microsoft Certification, Teams",
+      "url"      : "/blog/microsoft-365-certified-teams-administrator-associate",
+      "date"     : "2023-03-22 00:00:00 -0400"
+    } ,
+  
+    {
       "title"    : "The new Admin On-Demand feature in the Mosyle MDM",
       "category" : "",
       "tags"     : "How To, MDM, Mosyle",
       "url"      : "/blog/how-to-the-new-admin-on-demand-feature-in-the-mosyle-mdm",
       "date"     : "2022-10-26 00:00:00 -0400"
+    } ,
+  
+    {
+      "title"    : "Mosyle Certified Admin",
+      "category" : "",
+      "tags"     : "MDM, Mobile Device Manager, Endpoint Management, Apple, iOS, macOS",
+      "url"      : "/blog/mosyle-certified-admin",
+      "date"     : "2021-09-26 00:00:00 -0400"
+    } ,
+  
+    {
+      "title"    : "Microsoft Certified: Azure Fundamentals",
+      "category" : "",
+      "tags"     : "Microsoft Certification, Azure",
+      "url"      : "/blog/microsoft-certified-azure-fundamentals",
+      "date"     : "2021-06-07 00:00:00 -0400"
+    } ,
+  
+    {
+      "title"    : "SSCA® &#39;Elite&#39; SIP training and SIP Certification",
+      "category" : "",
+      "tags"     : "SIP, VoIP, IP Phone Telecommunications, SIP Trunking, STIR/SHAKEN",
+      "url"      : "/blog/sip-ssca-certification",
+      "date"     : "2020-01-02 00:00:00 -0500"
     } ,
   
     {
@@ -70,6 +110,14 @@
       "tags"     : "Emergency Notification, Emergency Communications",
       "url"      : "/blog/vesta-alert-notification-system",
       "date"     : "2019-10-24 00:00:00 -0400"
+    } ,
+  
+    {
+      "title"    : "Milestone Certified Integration Technician (MCIT)",
+      "category" : "",
+      "tags"     : "Milestone Systems, XProtect, VMS, Video Management System, IP Cameras, CCTV",
+      "url"      : "/blog/milestone-certified-integration-technician-mcit",
+      "date"     : "2019-01-10 00:00:00 -0500"
     } ,
   
     {
