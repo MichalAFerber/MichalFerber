@@ -9,7 +9,7 @@ weight: 1
 
 # **My story**
 
-Hi I am **{{ site.author.name }}** :wave:,
+Hi, I am **{{ site.author.name }}** :wave:,
 
 As a homeschooled kid in small-town South Carolina, I was extremely interested in computers. Once I realized I had an affinity for technology, I never looked back. After graduating a couple of years early from high school, I began my career on graduation day with an internship at a local system integrator shop. I went on to delve into programming, network infrastructure, telephony, and more.
 
@@ -36,8 +36,9 @@ Timeline
 {% capture carousel_images %}
 /assets/badges/microsoft-azure-fundamentals.png
 /assets/badges/microsoft-365-teams-administrator-associate.png
-/assets/badges/mcse.png
-/assets/badges/mcp.png
+/assets/badges/mcse-square.png
+/assets/badges/csc-champion-badge.jpg
+/assets/badges/sip-ssca-elite.png
 /assets/badges/milestone-certified-integration-technician-mcit.png
 /assets/badges/mosyle.png
 {% endcapture %}
@@ -72,7 +73,7 @@ Timeline
 /assets/certs/2022-01-02_SIP_SSCA_Certification.jpg
 /assets/certs/2022-03-20_Chrome_Enterprise_Deployment_Exam.jpg
 /assets/certs/2022-04-14_Druva_Endpoints.jpg
-/assets/certs/Mailerlite Expert.png
+/assets/certs/mailerlite-expert.png
 {% endcapture %}
 {% include elements/carousel.html %}
 </div>
@@ -83,34 +84,4 @@ Timeline
 {% include about/timeline.html %}
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Fix Badges carousel
-  var badgesCarousel = document.querySelector('.badges-container .carousel');
-  if (badgesCarousel) {
-    badgesCarousel.id = 'badgesCarousel';
-    badgesCarousel.querySelectorAll('.carousel-indicators li').forEach(function(li) {
-      li.setAttribute('data-target', '#badgesCarousel');
-    });
-    badgesCarousel.querySelector('.carousel-control-prev').setAttribute('href', '#badgesCarousel');
-    badgesCarousel.querySelector('.carousel-control-next').setAttribute('href', '#badgesCarousel');
-  }
-
-  // Fix Certifications carousel
-  var certsCarousel = document.querySelector('.certifications-container .carousel');
-  if (certsCarousel) {
-    certsCarousel.id = 'certsCarousel';
-    certsCarousel.querySelectorAll('.carousel-indicators li').forEach(function(li) {
-      li.setAttribute('data-target', '#certsCarousel');
-    });
-    certsCarousel.querySelector('.carousel-control-prev').setAttribute('href', '#certsCarousel');
-    certsCarousel.querySelector('.carousel-control-next').setAttribute('href', '#certsCarousel');
-  }
-
-  // Initialize carousels with jQuery
-  if (typeof jQuery !== 'undefined') {
-    jQuery('#badgesCarousel').carousel();
-    jQuery('#certsCarousel').carousel();
-  }
-});
-</script>
+<script src="/assets/js/carousel.js"></script>

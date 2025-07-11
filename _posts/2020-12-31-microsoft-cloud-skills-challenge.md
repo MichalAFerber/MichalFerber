@@ -11,7 +11,7 @@ color: secondary
 
 I completed my first Cloud Skills Challenge. The learning path was AZ-104: Azure Administrator.
 
-![CSC Champion Badge](/assets/img/csc-champion-badge.jpg)
+![CSC Champion Badge](/assets/badges/csc-champion-badge.jpg)
 
 [Microsoft Learn modules for the challenge](https://docs.microsoft.com/en-us/users/msusdev/collections/xgenf83468edpn?WT.mc_id=SMCCloudSkillsChallenge_xgenf83468edpn_-web-us)
 
