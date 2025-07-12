@@ -32,14 +32,11 @@ Want to skip the manual setup?
 Just run the installer script directly from the repo:
 
 ```bash
-# English (default)
+# Run with system language fallback
 curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash
 
-# Spanish
-curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash -s -- --lang=es
-
-# Dutch
-curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash -s -- --lang=nl
+# Or override the language manually
+curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash -s -- --lang=de
 ```
 
 ---
