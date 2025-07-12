@@ -23,7 +23,7 @@ You’ll get:
 - Weather for your location
 - A custom message ("Whiskey, Tango, Foxtrot!")
 
-<script async defer src="https://buttons.github.io/buttons.js"></script><a class="github-button" href="https://github.com/MichalAFerber/welcome-message/archive/HEAD.zip" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Download MichalAFerber/welcome-message on GitHub">Download</a>
+<script async defer src="https://buttons.github.io/buttons.js"></script><a class="github-button" href="https://github.com/MichalAFerber/welcome-message/" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" aria-label="Go to MichalAFerber/welcome-message on GitHub">GitHub</a>
 
 ---
 
