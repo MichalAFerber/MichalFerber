@@ -194,6 +194,10 @@ Or open a new terminal or SSH session to see the welcome message in action.
 
 - You can customize the colors, messages, or add even more functionality (like Docker container status, CPU graph, etc.).
 
+- Automated Hash Verification
+
+    To ensure the integrity of the English welcome message template, the project uses GitHub Actions to automatically compute and update the script’s checksum whenever the template changes. This automation helps keep the installer script reliable and up to date without requiring manual updates — so you can trust that the correct version is always installed when you run the script
+
 ---
 
 ## 🎉 Result Example
