@@ -25,6 +25,18 @@ You’ll get:
 
 ---
 
+### 🔧 Optional One-Step Installer
+
+Want to skip the manual setup?
+
+Just run the installer script directly from the repo:
+
+```bash
+curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash
+```
+
+---
+
 ## ✅ Step 1: Create the Welcome Script
 
 Create a new script in your home directory:
