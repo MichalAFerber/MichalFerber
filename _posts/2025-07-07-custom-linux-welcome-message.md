@@ -35,10 +35,10 @@ Just run the installer script directly from the repo:
 
 ```bash
 # Run with system language fallback
-curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash
+curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/refs/heads/main/install_welcome.sh | bash
 
 # Or override the language manually
-curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/main/install-welcome.sh | bash -s -- --lang=de
+curl -s https://raw.githubusercontent.com/MichalAFerber/welcome-message/refs/heads/main/install_welcome.sh | bash -s -- --lang=de
 ```
 
 ---
